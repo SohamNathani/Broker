@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/start.css">
+</head>
+<body>
+    <div class="grid-container">
+    <div class='nav'>
+    <ul>
+        <li><a href="party.html">Party</a></li>
+        <li><a href="transaction.html">Transaction </a></li>
+        <li><a href="report.html">Report</a></li>
+        <li><a href="setting.html">Setting</a></li>
+        <li><a href="index.html">Start Menu</a></li>
+        <li><a href="index1.html">Choose Company</a></li>
+    </ul>
+    <button onclick=create_backup() id="backup-btn">Create Backup</button>
+    </div>
+    <div class="sidepanel"></div>
+    </div>
+</body>
+<script>
+    const {ipcRenderer} = require('electron');
+    function create_backup(){
+        ipcRenderer.send('download_button',{url:'file://C:/Users/SNcion/Desktop/Final Project/db/brokers.db'})
+    }
+
+</script>
+</html>

@@ -1,0 +1,41 @@
+html{
+    height:100%;
+    background-image:url('front_background2.jpg');
+    background-repeat: no-repeat;
+    background-size:cover;
+    box-shadow:inset 0 0 0 2000px rgba(0, 10, 227, 0.5);
+    
+  }
+    
+
+h1{
+    font-size: 50px;
+    font-weight: bolder;
+    color:white;
+    margin-top:200px;
+    margin-left:390px;
+    font-family:sans-serif;
+}
+div{
+    margin:20px auto;
+}
+div:nth-of-type(1){
+    padding-left:38.5%;
+}
+div:nth-of-type(2){
+    padding-left:38.5%;
+}
+button{
+    padding:10px 30px;
+    border-radius:20px;
+    border: 1px solid white;
+    background-color: white;
+    outline:none;
+    font-size: 17px;
+    font-weight: bolder;
+    color:rgb(5, 16, 227);
+    
+}
+#one{
+    padding:10px 48px;
+}

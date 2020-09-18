@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <h1>Report Page</h1>
+    <label for="pdf_party_name"></label>
+        <select name="" id="pdf_party_name">
+            <option value="">----Select Party----</option>
+        </select>
+    <input type="submit" value='See Pdf' onclick='open_report_form()'>    
+
+    
+   <script>
+       var bill_window;
+       const ipcRenderer = require('electron').ipcRenderer;
+       const BrowserWindow = require('electron').remote.BrowserWindow;
+       let pdf_party_name = document.getElementById('pdf_party_name')
+       //Call for party loading
+       ipcRenderer.send('load_party_name','');
+        //Party name loaded
+       ipcRenderer.on('loaded-party-name', (event,arg)=>{
+        arg.forEach(optionss => {
+             var option = document.createElement('option');
+             option.value = optionss.party_id;
+             option.innerHTML = optionss.name;
+             //console.log(option);
+             
+             //seller.appendChild(option);
+             pdf_party_name.appendChild(option);
+         });
+       })
+       //Creating bill window
+       function open_report_form(event){
+             bill_window = new BrowserWindow({
+            width: 400,
+            height: 300,
+            webPreferences: {
+                nodeIntegration: true
+    }
+    });
+            let party_selected =  document.getElementById('pdf_party_name').selectedIndex;
+            console.log(party_selected);
+            //bill_window.maximize()
+            let response = ipcRenderer.sendSync('send detail',party_selected)
+            bill_window.loadFile('bill.html');
+            
+
+       }
+    //    ipcRenderer.on('give_my_webcontent', (event,args)=>{
+    //        console.log(bill_window.webContents)
+    //    })
+
+
+
+   </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/start.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="grid-container">
+        <div class='nav'>
+        <ul>
+            <li><a href="party.html">Party</a></li>
+            <li><a href="transaction.html">Transaction </a></li>
+            <li><a href="report.html">Report</a></li>
+            <li><a href="setting.html">Setting</a></li>
+            <li><a href="index.html">Start Menu</a></li>
+            <li><a href="index1.html">Choose Company</a></li>
+        </ul>
+        <button onclick=create_backup() id="backup-btn" disabled>Create Backup</button>
+        </div>
+        <div class="sidepanel">
+            
+            <form action="" name='partyform' id="partyform" onsubmit="Javascript:partysendform(event)">
+                <h1 class="party-heading">Create Party</h1>
+                <label for="name">Party Name</label>
+                <input type="text" id='name' class="input">
+                <label for="city">Party City</label>
+                <input type="text" id='city' class="input">
+                <label for="gst">Party GST</label>
+                <input type="text" id='gst' class="input">
+                <input type="submit" id="submit-btn" value='Submit'>
+            </form>
+        </div>
+        </div>
+
+    
+</body>
+<script>
+    const ipcRenderer = require('electron').ipcRenderer;
+    function partysendform(event){
+        event.preventDefault()
+        let partyname = document.getElementById("name").value;
+        let partycity = document.getElementById("city").value;
+        let partygst = document.getElementById("gst").value;
+        let partyarray=[partyname,partycity,partygst];
+        ipcRenderer.send('partyform-submission',partyarray);
+
+    
+
+    }
+</script>
+</html>

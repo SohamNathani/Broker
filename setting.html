@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" onsubmit="Javascript:send_setting_form(event)">
+        <label for="name">Name</label>
+        <input type="text" id="name">
+        <label for="add_line_1">Address Line 1</label>
+        <input type="text" id="add_line_1">
+        <label for="add_line_2">Address Line 2</label>
+        <input type="text" id="add_line_2">
+        <label for="phone_no">Phone No</label>
+        <input type="text" id="phone_no">
+        <input type='submit' value='Update'>
+        
+        
+    </form>
+
+    <script>
+        var in_Db = 1;
+        const ipcRenderer = require('electron').ipcRenderer;
+        ipcRenderer.send('setting page loaded', '');
+        ipcRenderer.on('setting data loaded',(event,args)=>{
+            console.log(args);
+            let data = args[0]
+            if (data!= null){
+            document.getElementById('name').value = data.name;
+            document.getElementById('add_line_1').value = data.add_1;
+            document.getElementById('add_line_2').value = data.add_2;
+            document.getElementById('phone_no').value = data.phone;
+            }else{
+                in_Db = 0
+            }
+        })
+        function send_setting_form(event){
+            event.preventDefault();
+            let arr_sett = [
+            document.getElementById('name').value,
+            document.getElementById('add_line_1').value,
+            document.getElementById('add_line_2').value,
+            document.getElementById('phone_no').value]
+            if (in_Db==1){
+            ipcRenderer.send('setting update',`UPDATE HEADER SET name = "${arr_sett[0]}",add_1 = "${arr_sett[1]}",add_2 = "${arr_sett[2]}",phone = "${arr_sett[3]}"`);
+        }else{
+            ipcRenderer.send('setting update',`INSERT INTO HEADER(name, add_1, add_2, phone) VALUES("${arr_sett[0]}","${arr_sett[1]}","${arr_sett[2]}","${arr_sett[3]}")`);
+        }
+    }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/trans.css">
+    <title>Document</title>
+</head>
+<body>
+  <div class="grid-container">
+  <div class='nav'>
+  <ul>
+      <li><a href="party.html">Party</a></li>
+      <li><a href="transaction.html">Transaction </a></li>
+      <li><a href="report.html">Report</a></li>
+      <li><a href="setting.html">Setting</a></li>
+      <li><a href="index.html">Start Menu</a></li>
+      <li><a href="index1.html">Choose Company</a></li>
+  </ul>
+  <button onclick=create_backup() id="backup-btn" disabled>Create Backup</button>
+  </div>
+  <div class="sidepanel">
+
+
+    <h1>Transaction Page</h1>
+    <form action="" style='display:none' id='transaction_form' onsubmit="Javascript:save_transaction_form(event)">
+
+        <h3 id='Transid'></h3>
+        <label for="date">Date <input type="date" id="date"></label>
+
+        <label for="seller">Seller
+          <select name="Seller" id="seller" class='read_mode'>
+              <option value="">-----Select seller------</option>
+          </select>
+        </label>
+
+        <label for="buyer">Buyer
+          <select name="Buyer" id="buyer" class='read_mode'>
+              <option value="">------Select buyer------</option>
+          </select>
+        </label>
+
+
+        <label for="jeans">Jeans <input type="text" id='jeans'></label>
+
+        <label for="Measure">Measure <input type="number" id='measure'></label>
+
+        <label for="bags">Bags <input type="number" id='bags' ></label>
+
+        <label for="rate">Rate <input type="number" id='rate' ></label>
+
+        <label for="seller_comission">Seller Commision rate <input type="number" id='seller_comission' ></label>
+
+        <label for="buyer_comission">Buyer Commision rate <input type="number" id='buyer_comission' ></label>
+
+        <input type="submit" id="trans_save_btn_css" value='Save'>
+    </form>
+    <div class="trans_btn">
+      <button onclick="add_function()" id="add-btn">Add</button>
+      <button onclick="edit_function()" id="edit-btn" disabled>Edit</button>
+      <button onclick="search_function()" id="search-btn">Search</button>
+      <button onclick="forward_arrow()" id="forward-btn" disabled> > </button>
+      <button onclick="backward_arrow()" id="backward-btn" disabled> < </button>
+    </div>
+
+  </div>
+</body>
+<script>
+    //INSERTION QUERY
+    var insert_query;
+    // CURRENT TRANSACTION ID
+    let current_trans_id;
+    //FLAG VARIABLE TO SAVE OR UPDATE
+    var save_flag_new = 1
+    //Forward Button
+    let forward_btn = document.getElementById('forward-btn');
+    //Backward Button
+    let backward_btn = document.getElementById('backward-btn');
+    //EDIT BUTTON
+    let edit_btn = document.getElementById('edit-btn');
+    //SEARCH BUTTON
+    let search_btn = document.getElementById('search-btn');
+    //DELETE BUTTON
+    let delete_btn = document.getElementById('delete-btn');
+    //ADD BUTTON
+    let add_btn = document.getElementById('add-btn');
+    //BROWSER WINDOW FOR SEARCH
+    const BrowserWindow = require('electron').remote.BrowserWindow;
+    //TRANS FORM
+    let trans_form = document.getElementById('transaction_form');
+    //IPC RENDERER AND FORM LOADING
+    const ipcRenderer = require('electron').ipcRenderer;
+     ipcRenderer.send('pageloaded','I am loaded');
+     var buyer = document.getElementById('buyer');
+     var seller = document.getElementById('seller');
+    //LOADING PARTY NAME IN DROPDOWN
+     ipcRenderer.on('party-name', (event, arg)=>{
+         arg.forEach(optionss => {
+             var option = document.createElement('option');
+             option.value = optionss.party_id;
+             option.innerHTML = optionss.name;
+             //console.log(option);
+
+             //seller.appendChild(option);
+             buyer.appendChild(option);
+         });
+         arg.forEach(optionss => {
+             var option = document.createElement('option');
+             option.value = optionss.party_id;
+             option.innerHTML = optionss.name;
+             //console.log(option);
+
+             seller.appendChild(option);
+             //buyer.appendChild(option);
+         });
+     })
+
+
+     //ADD FUNCTION TO ADD TRANSACTION
+     function add_function(){
+        write_also_mode()
+        edit_btn.disabled = true;
+        forward_btn.disabled = true;
+        backward_btn.disabled = true;
+        trans_form.style.display='block';
+        document.getElementById('transaction_form').reset();
+        ipcRenderer.send('need_transaction_id',"Pass Transaction id");
+        ipcRenderer.on('current_transaction_id',(event,arg)=>{
+            let Transaction_id = document.getElementById('Transid')
+            Transaction_id.innerHTML=`Trans Id - ${arg+1}`;
+            //Enabling write permission
+
+            save_flag_new=1
+        })
+     }
+
+     //OPEN SEARCH WINDOW
+     function search_function(){
+        const search_window = new BrowserWindow({
+    width: 400,
+    height: 300,
+    webPreferences: {
+      nodeIntegration: true
+    }
+    });
+    search_window.loadFile('search.html');
+
+
+     }
+    //RESULT ON SEARCH
+    ipcRenderer.on('search_result', (event,arg)=>{
+        if (arg !=null){
+        trans_form.style.display='block';
+        edit_btn.disabled=false;
+        forward_btn.disabled=false;
+        backward_btn.disabled=false;
+
+
+        /// Setting the formmode
+
+        current_trans_id = arg.trans_id
+        document.getElementById('date').value = arg.trans_date;
+        document.getElementById('Transid').innerHTML = `Trans Id - ${arg.trans_id}`;
+        document.getElementById('jeans').value = arg.jeans;
+        document.getElementById('measure').value = arg.mesasure;
+        document.getElementById('bags').value = arg.bags;
+        document.getElementById('rate').value = arg.rate;
+        document.getElementById('jeans').value = arg.jeans;
+        document.getElementById('seller_comission').value = arg.sell_comission_rate;
+        document.getElementById('buyer_comission').value = arg.buy_commsion_rate;
+        document.getElementById('buyer').selectedIndex = arg.buyer;
+        document.getElementById('seller').selectedIndex = arg.seller;
+
+        ///Readonlymode
+          read_only_mode();
+        } else{
+            trans_form.style.display = 'none';
+        }
+
+    })
+
+//EDIT FUNCTION
+    function edit_function(){
+        //Write also mod
+        forward_btn.disabled = true;
+        backward_btn.disabled = true;
+        save_flag_new = 0
+        write_also_mode();
+
+
+    }
+//SAVE TRANSACTION FORM
+
+function save_transaction_form(event){
+        event.preventDefault();
+        let upda_array=[
+        document.getElementById('buyer').selectedIndex,
+        document.getElementById('seller').selectedIndex,
+        document.getElementById('jeans').value,
+        document.getElementById('measure').value,
+        document.getElementById('bags').value,
+        document.getElementById('rate').value,
+        document.getElementById('seller_comission').value,
+        document.getElementById('buyer_comission').value,
+        document.getElementById('date').value
+        ]
+        if(save_flag_new==0){
+
+        insert_query = `UPDATE TRANSACTIONs SET buyer = ${upda_array[0]}, seller = ${upda_array[1]}, jeans="${upda_array[2]}", mesasure=${upda_array[3]}, bags=${upda_array[4]}, rate=${upda_array[5]}, buy_commsion_rate=${upda_array[7]}, sell_comission_rate=${upda_array[6]}, trans_date="${upda_array[8]}" WHERE trans_id=${current_trans_id} `;
+
+        }
+        else if (save_flag_new==1) {
+        insert_query = `INSERT INTO "TRANSACTIONs"(trans_date, buyer, seller, jeans, mesasure, bags, rate, buy_commsion_rate, sell_comission_rate) VALUES("${upda_array[8]}", ${upda_array[0]}, ${upda_array[1]}, "${upda_array[2]}", ${upda_array[3]}, ${upda_array[4]}, ${upda_array[5]}, ${upda_array[7]}, ${upda_array[6]}) `;
+        }
+        ipcRenderer.send('save_transaction_query',insert_query);
+        ipcRenderer.on('success_transaction_query',(event, args)=>{
+
+            trans_form.style.display= 'none';
+            save_flag_new=1;
+            edit_btn.disabled =true;
+            forward_btn.disabled = true;
+            backward_btn.disabled = true;
+        })
+    }
+
+    //Forward arrow function
+    function forward_arrow(){
+        let forward_result = ipcRenderer.sendSync('forward_trans_query',current_trans_id);
+        console.log(forward_result);
+            if (forward_result !=null){
+        trans_form.style.display='block';
+        edit_btn.disabled=false;
+
+
+        /// Setting the formmode
+
+        current_trans_id = forward_result.trans_id
+        document.getElementById('date').value = forward_result.trans_date;
+        document.getElementById('Transid').innerHTML = forward_result.trans_id;
+        document.getElementById('jeans').value = forward_result.jeans;
+        document.getElementById('measure').value = forward_result.mesasure;
+        document.getElementById('bags').value = forward_result.bags;
+        document.getElementById('rate').value = forward_result.rate;
+        document.getElementById('jeans').value = forward_result.jeans;
+        document.getElementById('seller_comission').value = forward_result.sell_comission_rate;
+        document.getElementById('buyer_comission').value = forward_result.buy_commsion_rate;
+        document.getElementById('buyer').selectedIndex = forward_result.buyer;
+        document.getElementById('seller').selectedIndex = forward_result.seller;
+
+        ///Readonlymode
+        read_only_mode();
+        } else{
+            trans_form.style.display = 'none';
+            edit_btn.disabled = true;
+            forward_btn.disabled = true;
+            backword_btn.disabled = true;
+        }
+
+    }
+//Backward Arrow function
+function backward_arrow(){
+    let backward_result = ipcRenderer.sendSync('backward_trans_query',current_trans_id);
+        console.log(backward_result);
+            if (backward_result !=null){
+        trans_form.style.display='block';
+        edit_btn.disabled=false;
+
+
+        /// Setting the formmode
+
+        current_trans_id = backward_result.trans_id
+        document.getElementById('date').value = backward_result.trans_date;
+        document.getElementById('Transid').innerHTML = backward_result.trans_id;
+        document.getElementById('jeans').value = backward_result.jeans;
+        document.getElementById('measure').value = backward_result.mesasure;
+        document.getElementById('bags').value = backward_result.bags;
+        document.getElementById('rate').value = backward_result.rate;
+        document.getElementById('jeans').value = backward_result.jeans;
+        document.getElementById('seller_comission').value = backward_result.sell_comission_rate;
+        document.getElementById('buyer_comission').value = backward_result.buy_commsion_rate;
+        document.getElementById('buyer').selectedIndex = backward_result.buyer;
+        document.getElementById('seller').selectedIndex = backward_result.seller;
+
+        ///Readonlymode
+        read_only_mode();
+        } else{
+            trans_form.style.display = 'none';
+            edit_btn.disabled = true;
+            forward_btn.disabled = true;
+            backward_btn.disabled =true;
+        }
+}
+
+
+
+//READ MODE FUNCTION
+    function read_only_mode(){
+        let f_elements = trans_form.elements;
+        for (var i = 0, len = f_elements.length; i < len; ++i) {
+            f_elements[i].readOnly = true;
+}       var seller_childnodes = document.getElementById('seller').childNodes;
+            for(var i=0;i<seller_childnodes.length;i++){
+                seller_childnodes[i].disabled = true;
+            }
+        var buyer_childnodes = document.getElementById('buyer').childNodes;
+            for(var i=0;i<seller_childnodes.length;i++){
+                buyer_childnodes[i].disabled = true;
+            }
+    }
+
+
+//WRITE MODE FUNCTION
+    function write_also_mode(){
+        let f_elements = trans_form.elements;
+        for (var i = 0, len = f_elements.length; i < len; ++i) {
+            f_elements[i].readOnly = false;
+}       var seller_childnodes = document.getElementById('seller').childNodes;
+            for(var i=0;i<seller_childnodes.length;i++){
+                seller_childnodes[i].disabled = false;
+            }
+        var buyer_childnodes = document.getElementById('buyer').childNodes;
+            for(var i=0;i<seller_childnodes.length;i++){
+                buyer_childnodes[i].disabled = false;
+            }
+    }
+</script>
+</html>

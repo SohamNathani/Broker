@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Enter the transaction id</h2>
+    <form action="" onsubmit="Javascript:search_trans_bar(event)">
+        <input type="integer" id="search_transaction_id">
+        <input type="submit" value="Search">
+    </form>
+    <script>
+    
+        const remote = require('electron').remote;
+        const ipcRenderer = require('electron').ipcRenderer
+        var trans_search_bar = document.getElementById('search_transaction_id');
+        function search_trans_bar(event){
+            event.preventDefault();
+            let result=[];
+            let query_id = trans_search_bar.value;
+            result = ipcRenderer.sendSync('search_transaction', query_id);
+            ipcRenderer.sendTo(1,'search_result',result[0]);
+            var search_current_window = remote.getCurrentWindow();
+            window.close();
+        }
+
+    </script>
+</body>
+</html>

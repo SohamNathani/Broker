@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/index.css">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Brokers</h1>
+    <div><button onclick="select_db()" id="one">Select Company</button></div>
+    <div><button onclick="create_db()" id="two">Create new company</button></div>
+</body>
+
+
+
+
+
+<script>
+    const {ipcRenderer} = require('electron');
+    const {dialog} = require('electron').remote;
+
+    //Selection Db function
+    function select_db(){
+        dialog.showOpenDialog({filters:[
+            {name:'DB file', extensions:['db']}
+        ],
+            properties: ['openFile']
+        }).then(result => {
+            //console.log(result.canceled)
+            if(result.canceled != true){
+            console.log(result.filePaths)
+            let response = ipcRenderer.sendSync('db selection',result.filePaths);
+            window.location = 'index.html';
+            //console.log(response);
+            } else{
+                return;
+            }
+
+        }).catch(err =>{
+            console.log(err)
+        })
+    }
+
+    //Creation Db function
+    function create_db(){
+        let filename =  dialog.showSaveDialogSync();
+        console.log(filename);
+        if(filename != undefined){
+            let response = ipcRenderer.sendSync('db creation',filename);
+            console.log(response)
+            window.location = 'index.html'
+        }
+            
+    }
+
+</script>
+</html>
