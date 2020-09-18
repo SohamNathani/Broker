@@ -20,21 +20,31 @@
         <button onclick=create_backup() id="backup-btn" disabled>Create Backup</button>
         </div>
         <div class="sidepanel">
-            
+
             <form action="" name='partyform' id="partyform" onsubmit="Javascript:partysendform(event)">
                 <h1 class="party-heading">Create Party</h1>
+
                 <label for="name">Party Name</label>
                 <input type="text" id='name' class="input">
-                <label for="city">Party City</label>
+
+                <label for="state">State</label>
+                <input type="text" id="state" class="input">
+
+                <label for="city">City</label>
                 <input type="text" id='city' class="input">
-                <label for="gst">Party GST</label>
+
+                <label for="gst">GST</label>
                 <input type="text" id='gst' class="input">
+
+                <label for="phone">Phone Number </label>
+                <input type="number" id="phone" class="input">
+
                 <input type="submit" id="submit-btn" value='Submit'>
             </form>
         </div>
         </div>
 
-    
+
 </body>
 <script>
     const ipcRenderer = require('electron').ipcRenderer;
@@ -43,10 +53,13 @@
         let partyname = document.getElementById("name").value;
         let partycity = document.getElementById("city").value;
         let partygst = document.getElementById("gst").value;
-        let partyarray=[partyname,partycity,partygst];
+        let partystate = document.getElementById("state").value;
+        let partyphone = document.getElementById("phone").value;
+
+        let partyarray=[partyname, partycity, partygst, partystate, partyphone ];
         ipcRenderer.send('partyform-submission',partyarray);
 
-    
+
 
     }
 </script>
