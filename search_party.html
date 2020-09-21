@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Enter the party id</h2>
+    <form action="" onsubmit="Javascript:search_party_bar(event)">
+        <input type="integer" id="search_party_id">
+        <input type="submit" value="Search">
+    </form>
+    <script>
+
+        const remote = require('electron').remote;
+        const ipcRenderer = require('electron').ipcRenderer
+        var party_search_bar = document.getElementById('search_party_id');
+        function search_party_bar(event){
+            event.preventDefault();
+            let result=[];
+            let query_id = party_search_bar.value;
+            result = ipcRenderer.sendSync('search_party', query_id);
+            ipcRenderer.sendTo(1,'search_party_result',result[0]);
+            var search_current_window = remote.getCurrentWindow();
+            window.close();
+        }
+
+    </script>
+</body>
+</html>

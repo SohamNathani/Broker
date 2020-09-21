@@ -22,7 +22,7 @@
         <div class="sidepanel">
 
             <form action="" name='partyform' id="partyform" onsubmit="Javascript:partysendform(event)">
-                <h1 class="party-heading">Create Party</h1>
+                <h1 class="party-heading">Party Id :- <span id="party-id"></span> </h1>
 
                 <label for="name">Party Name</label>
                 <input type="text" id='name' class="input">
@@ -41,6 +41,14 @@
 
                 <input type="submit" id="submit-btn" value='Submit'>
             </form>
+            <div class="trans_btn">
+              <button onclick="add_function()" id="add-btn">Add</button>
+              <button onclick="edit_function()" id="edit-btn">Edit</button>
+              <button onclick="search_function()" id="search-btn">Search</button>
+              <button onclick="forward_arrow()" id="forward-btn"> > </button>
+              <button onclick="backward_arrow()" id="backward-btn"> < </button>
+              <button onclick="cancel_function()" id="cancel-btn" disabled>Cancel</button>
+            </div>
         </div>
         </div>
 
@@ -48,8 +56,27 @@
 </body>
 <script>
     const ipcRenderer = require('electron').ipcRenderer;
+    const BrowserWindow = require('electron').remote.BrowserWindow;
+    let save_flag_new = 0;// flag variable to update query or add query
+    let submit_btn = document.getElementById('submit-btn');
+    let forward_btn = document.getElementById('forward-btn');
+    let backward_btn = document.getElementById('backward-btn');
+    let edit_btn = document.getElementById('edit-btn');
+    let search_btn = document.getElementById('search-btn');
+    let add_btn = document.getElementById('add-btn');
+    let cancel_btn = document.getElementById('cancel-btn');
+    let current_party_id; //Store current party id
+    let insert_query;
+
+
+
+    last_record_fetch();
+
+
+
+    //Save Party Function
     function partysendform(event){
-        event.preventDefault()
+        event.preventDefault();
         let partyname = document.getElementById("name").value;
         let partycity = document.getElementById("city").value;
         let partygst = document.getElementById("gst").value;
@@ -57,10 +84,166 @@
         let partyphone = document.getElementById("phone").value;
 
         let partyarray=[partyname, partycity, partygst, partystate, partyphone ];
-        ipcRenderer.send('partyform-submission',partyarray);
 
+        if (save_flag_new == 1){ // Add condition
+            insert_query = `INSERT INTO PARTY(name, city, gst, state ,phone) VALUES("${partyarray[0]}", "${partyarray[1]}", "${partyarray[2]}", "${partyarray[3]}" , "${partyarray[4]}") `
+        }
+        else if (save_flag_new == 0 ){
+            insert_query = `UPDATE PARTY SET name="${partyarray[0]}", city="${partyarray[1]}", gst="${partyarray[2]}", state="${partyarray[3]}", phone="${partyarray[4]}" WHERE party_id=${current_party_id}`;
+        }
+
+
+        ipcRenderer.send('partyform-submission',insert_query);
+        ipcRenderer.on('party saved',(event,args)=>{
+          last_record_fetch();
+
+        })
 
 
     }
+
+    //Cancel FUNCTION
+    function cancel_function(){
+      read_only_mode();
+    }
+
+    //Add Function
+    function add_function(){
+      write_also_mode();
+
+      document.getElementById('partyform').reset();
+      let party_id = ipcRenderer.sendSync("last party id","");
+      document.getElementById('party-id').innerHTML = party_id;
+      save_flag_new = 1 //1 for add
+
+    }
+
+    //Search FUNCTION
+    function search_function(){
+       const search_window = new BrowserWindow({
+   width: 400,
+   height: 300,
+   webPreferences: {
+     nodeIntegration: true
+   }
+   });
+   search_window.loadFile('search_party.html');
+
+}
+
+   //Search page event catcher
+   ipcRenderer.on('search_party_result', (event,arg)=>{
+       if (arg !=null){
+
+       // Setting the formmode
+       document.getElementById('party-id').innerHTML = arg.party_id;
+       current_party_id = arg.party_id;
+       document.getElementById("name").value = arg.name;
+       document.getElementById("city").value = arg.city;
+       document.getElementById("gst").value = arg.gst;
+       document.getElementById("state").value = arg.state;
+       document.getElementById("phone").value = arg.phone;
+
+
+       }
+   })
+
+
+
+    //Edit FUNCTION
+    function edit_function(){
+      write_also_mode();
+      save_flag_new = 0;
+
+    }
+    //Backward Arrow
+    function backward_arrow(){
+      let backward_party_result = ipcRenderer.sendSync('backward_party_query',current_party_id);
+      if (backward_party_result!=null){
+        document.getElementById('party-id').innerHTML = backward_party_result.party_id;
+        current_party_id = backward_party_result.party_id;
+        document.getElementById("name").value = backward_party_result.name;
+        document.getElementById("city").value = backward_party_result.city;
+        document.getElementById("gst").value = backward_party_result.gst;
+        document.getElementById("state").value = backward_party_result.state;
+        document.getElementById("phone").value = backward_party_result.phone;
+      }else{
+        backward_btn.disabled = true;
+      }
+      if (forward_btn.disabled==true){
+        forward_btn.disabled=false;
+      }
+    }
+
+    //Forward Arrow
+    function forward_arrow(){
+      let forward_party_result = ipcRenderer.sendSync('forward_party_query',current_party_id);
+      if (forward_party_result!=null){
+        document.getElementById('party-id').innerHTML = forward_party_result.party_id;
+        current_party_id = forward_party_result.party_id;
+        document.getElementById("name").value = forward_party_result.name;
+        document.getElementById("city").value = forward_party_result.city;
+        document.getElementById("gst").value = forward_party_result.gst;
+        document.getElementById("state").value = forward_party_result.state;
+        document.getElementById("phone").value = forward_party_result.phone;
+      }else{
+        forward_btn.disabled = true;
+      }
+      if (backward_btn.disabled==true){
+        backward_btn.disabled=false;
+      }
+    }
+
+
+
+
+    //FETCING LATEST RECORD
+    function last_record_fetch(){
+      let last_result = ipcRenderer.sendSync('last party entry',"");
+      //console.log(last_result);
+      document.getElementById('party-id').innerHTML = last_result.party_id;
+      current_party_id = last_result.party_id;
+      document.getElementById("name").value = last_result.name;
+      document.getElementById("city").value = last_result.city;
+      document.getElementById("gst").value = last_result.gst;
+      document.getElementById("state").value = last_result.state;
+      document.getElementById("phone").value = last_result.phone;
+
+      read_only_mode();
+
+      }
+
+
+
+
+//
+function read_only_mode(){
+  cancel_btn.disabled=true
+  submit_btn.disabled = true;
+  add_btn.disabled = false;
+  edit_btn.disabled = false;
+  forward_btn.disabled = false;
+  backward_btn.disabled = false;
+  search_btn.disabled = false;
+  let f_elements = document.getElementById('partyform').elements;
+  for(var i=0; i<f_elements.length;i++){
+    f_elements[i].readOnly = true;
+
+}
+}
+function write_also_mode(){
+  cancel_btn.disabled = false;
+  submit_btn.disabled = false;
+  add_btn.disabled=true;
+  edit_btn.disabled = true;
+  forward_btn.disabled = true;
+  backward_btn.disabled = true;
+  search_btn.disabled = true;
+  let f_elements = document.getElementById('partyform').elements;
+  for(var i=0; i<f_elements.length;i++){
+    f_elements[i].readOnly = false;
+
+}
+}
 </script>
 </html>

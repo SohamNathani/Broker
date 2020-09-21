@@ -79,9 +79,12 @@ ipcMain.on('db creation',(event,arg)=>{
 
 //Add party form to db
 ipcMain.on('partyform-submission', (event,arg)=> {
-  console.log(arg[0]);
-  //userDB.run("INSERT INTO PARTY(name, city, gst) VALUES('soham', 'atna', 'fasdfasdfadfa');");
-  userDB.run("INSERT INTO PARTY(name, city, gst, state, phone) VALUES( '" + arg[0] + "' , '" + arg[1] +"' , '" + arg[2] +"' , '" + arg[3] +"' , '" +arg[4] +"');");
+  userDB.run(arg, [], function(err){
+      if(err){
+        return console.error(err.message)
+      }
+      event.reply('party saved',"")
+  } )
 })
 //Load parties name to transaction html file
 ipcMain.on('pageloaded',(event,arg)=>{
@@ -215,4 +218,54 @@ ipcMain.on('download_button',async (event,{url})=>{
   console.log(await download(win, url,{
       saveAs:true
   }));
+})
+
+//FETCHING LATEST RECORD
+ipcMain.on("last party entry", (event,arg)=>{
+  userDB.all('SELECT * from PARTY WHERE party_id IN (SELECT max(party_id) FROM PARTY);',[],(err,row)=>{
+    if(err){
+      throw err;
+    }console.log(row)
+    event.returnValue = row[0]
+  })
+})
+
+//Fetch last party id
+ipcMain.on("last party id", (event,arg)=>{
+  userDB.all('SELECT max(party_id) FROM PARTY',[],(err,row)=>{
+    if(err){
+      throw err;
+    }console.log(row[0]);
+    event.returnValue = row[0]['max(party_id)'] + 1
+  })
+})
+//forward party QUERY
+ipcMain.on('forward_party_query',(event,arg)=>{
+  userDB.all('SELECT * FROM PARTY WHERE party_id = ?',[arg+1],(err, row)=>{
+    if(err){
+      throw err;
+    }console.log(row);
+    event.returnValue = row[0];
+
+  })
+})
+//BACKWARD PARTY QUERY
+ipcMain.on('backward_party_query',(event,arg)=>{
+  userDB.all('SELECT * FROM PARTY WHERE party_id = ?',[arg-1],(err, row)=>{
+    if(err){
+      throw err;
+    }console.log(row);
+    event.returnValue = row[0];
+
+})
+})
+//Search Party
+ipcMain.on('search_party', (event,arg)=>{
+  userDB.all('SELECT * FROM PARTY WHERE party_id = ?',[arg],(err, row)=>{
+    if(err){
+      throw err;
+    }console.log(row);
+    event.returnValue = row;
+
+    })
 })
