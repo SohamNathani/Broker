@@ -201,6 +201,7 @@ ipcMain.on('forward_trans_query',(event,arg)=>{
 
 })
 })
+
 ipcMain.on('backward_trans_query',(event,arg)=>{
   userDB.all('SELECT * FROM TRANSACTIONs WHERE trans_id = ?',[arg-1],(err, row)=>{
     if(err){
@@ -210,6 +211,8 @@ ipcMain.on('backward_trans_query',(event,arg)=>{
 
 })
 })
+
+
 ipcMain.on('download_button',async (event,{url})=>{
   console.log(url)
   url = 'file://'+backup_link;
@@ -268,4 +271,13 @@ ipcMain.on('search_party', (event,arg)=>{
     event.returnValue = row;
 
     })
+})
+//Fetcing latest record from transaction_form
+ipcMain.on("last transaction entry", (event,arg)=>{
+  userDB.all('SELECT * from TRANSACTIONs WHERE trans_id IN (SELECT max(trans_id) FROM TRANSACTIONs);',[],(err,row)=>{
+    if(err){
+      throw err;
+    }console.log(row)
+    event.returnValue = row[0]
+  })
 })

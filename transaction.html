@@ -23,9 +23,9 @@
 
 
     <h1>Transaction Page</h1>
-    <form action="" style='display:none' id='transaction_form' onsubmit="Javascript:save_transaction_form(event)">
+    <form action="" id='transaction_form' onsubmit="Javascript:save_transaction_form(event)">
 
-        <h3 id='Transid'></h3>
+        <h3 >Trans id : <span id="Transid"></span></h3>
         <label for="date">Date <input type="date" id="date"></label>
 
         <label for="seller">Seller
@@ -90,6 +90,10 @@
     let trans_form = document.getElementById('transaction_form');
     //IPC RENDERER AND FORM LOADING
     const ipcRenderer = require('electron').ipcRenderer;
+
+    //save BUTTON
+    let save_btn = document.getElementById("trans_save_btn_css");
+
      ipcRenderer.send('pageloaded','I am loaded');
      var buyer = document.getElementById('buyer');
      var seller = document.getElementById('seller');
@@ -116,13 +120,12 @@
      })
 
 
+     last_record_fetch();
+
+
      //ADD FUNCTION TO ADD TRANSACTION
      function add_function(){
         write_also_mode()
-        edit_btn.disabled = true;
-        forward_btn.disabled = true;
-        backward_btn.disabled = true;
-        trans_form.style.display='block';
         document.getElementById('transaction_form').reset();
         ipcRenderer.send('need_transaction_id',"Pass Transaction id");
         ipcRenderer.on('current_transaction_id',(event,arg)=>{
@@ -160,7 +163,7 @@
 
         current_trans_id = arg.trans_id
         document.getElementById('date').value = arg.trans_date;
-        document.getElementById('Transid').innerHTML = `Trans Id - ${arg.trans_id}`;
+        document.getElementById('Transid').innerHTML = arg.trans_id;
         document.getElementById('jeans').value = arg.jeans;
         document.getElementById('measure').value = arg.mesasure;
         document.getElementById('bags').value = arg.bags;
@@ -173,8 +176,6 @@
 
         ///Readonlymode
           read_only_mode();
-        } else{
-            trans_form.style.display = 'none';
         }
 
     })
@@ -182,8 +183,6 @@
 //EDIT FUNCTION
     function edit_function(){
         //Write also mod
-        forward_btn.disabled = true;
-        backward_btn.disabled = true;
         save_flag_new = 0
         write_also_mode();
 
@@ -215,11 +214,9 @@ function save_transaction_form(event){
         ipcRenderer.send('save_transaction_query',insert_query);
         ipcRenderer.on('success_transaction_query',(event, args)=>{
 
-            trans_form.style.display= 'none';
+
             save_flag_new=1;
-            edit_btn.disabled =true;
-            forward_btn.disabled = true;
-            backward_btn.disabled = true;
+            last_record_fetch();
         })
     }
 
@@ -250,10 +247,10 @@ function save_transaction_form(event){
         ///Readonlymode
         read_only_mode();
         } else{
-            trans_form.style.display = 'none';
-            edit_btn.disabled = true;
             forward_btn.disabled = true;
-            backword_btn.disabled = true;
+        }
+        if (backward_btn.disabled==true){
+          backward_btn.disabled=false;
         }
 
     }
@@ -264,7 +261,6 @@ function backward_arrow(){
             if (backward_result !=null){
         trans_form.style.display='block';
         edit_btn.disabled=false;
-
 
         /// Setting the formmode
 
@@ -284,17 +280,51 @@ function backward_arrow(){
         ///Readonlymode
         read_only_mode();
         } else{
-            trans_form.style.display = 'none';
-            edit_btn.disabled = true;
-            forward_btn.disabled = true;
-            backward_btn.disabled =true;
+            backward_btn.disabled = true;
         }
+        if (forward_btn.disabled==true){
+          forward_btn.disabled=false;
+        }
+
 }
+
+function last_record_fetch(){
+  let last_result = ipcRenderer.sendSync('last transaction entry',"");
+  console.log(last_result);
+  if(last_result !=null){
+  current_trans_id = last_result.trans_id;
+  document.getElementById('date').value = last_result.trans_date;
+  document.getElementById('Transid').innerHTML = last_result.trans_id;
+  document.getElementById('jeans').value = last_result.jeans;
+  document.getElementById('measure').value = last_result.mesasure;
+  document.getElementById('bags').value = last_result.bags;
+  document.getElementById('rate').value = last_result.rate;
+  document.getElementById('jeans').value = last_result.jeans;
+  document.getElementById('seller_comission').value = last_result.sell_comission_rate;
+  document.getElementById('buyer_comission').value = last_result.buy_commsion_rate;
+  document.getElementById('buyer').selectedIndex = last_result.buyer;
+  document.getElementById('seller').selectedIndex = last_result.seller;
+}
+  read_only_mode();
+
+  }
+
+
+
+
 
 
 
 //READ MODE FUNCTION
     function read_only_mode(){
+       save_btn.disabled = true;
+        edit_btn.disabled=false;
+        search_btn.disabled = false;
+        add_btn.disabled = false;
+        forward_btn.disabled = false;
+        backward_btn.disabled = false
+
+
         let f_elements = trans_form.elements;
         for (var i = 0, len = f_elements.length; i < len; ++i) {
             f_elements[i].readOnly = true;
@@ -311,6 +341,13 @@ function backward_arrow(){
 
 //WRITE MODE FUNCTION
     function write_also_mode(){
+      save_btn.disabled = false;
+      edit_btn.disabled=true;
+      search_btn.disabled = true;
+      add_btn.disabled = true;
+      forward_btn.disabled = true;
+      backward_btn.disabled = true;
+
         let f_elements = trans_form.elements;
         for (var i = 0, len = f_elements.length; i < len; ++i) {
             f_elements[i].readOnly = false;
