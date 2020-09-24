@@ -40,8 +40,15 @@
           </select>
         </label>
 
-
         <label for="jeans">Jeans <input type="text" id='jeans'></label>
+
+        <!--Radio box-->
+        <input type="radio" id="weight" name="b_mode" value="w" checked>
+        <label for="weight">Weight</label>
+        <input type="radio" id="unit" name="b_mode" value="u">
+        <label for="unit">Unit</label>
+        <input type="radio" id="percent" name="b_mode" value="p">
+        <label for="percent">Percentage</label>
 
         <label for="Measure">Measure <input type="number" id='measure'></label>
 
@@ -90,6 +97,8 @@
     let trans_form = document.getElementById('transaction_form');
     //IPC RENDERER AND FORM LOADING
     const ipcRenderer = require('electron').ipcRenderer;
+
+    let modes = document.getElementsByName('b_mode');
 
     //save BUTTON
     let save_btn = document.getElementById("trans_save_btn_css");
@@ -173,6 +182,13 @@
         document.getElementById('buyer_comission').value = arg.buy_commsion_rate;
         document.getElementById('buyer').selectedIndex = arg.buyer;
         document.getElementById('seller').selectedIndex = arg.seller;
+        if(arg.mode == 'w'){
+          document.getElementById('weight').checked = true;
+        }else if (arg.mode == 'u') {
+          document.getElementById('unit').checked = true;
+        }else{
+          document.getElementById('percent').checked = true
+        }
 
         ///Readonlymode
           read_only_mode();
@@ -192,6 +208,14 @@
 
 function save_transaction_form(event){
         event.preventDefault();
+        let save_mode;
+        for(i = 0; i < modes.length; i++) {
+                if(modes[i].checked){
+                save_mode = modes[i].value;
+                break;
+          }
+        }
+          console.log(save_mode);
         let upda_array=[
         document.getElementById('buyer').selectedIndex,
         document.getElementById('seller').selectedIndex,
@@ -201,15 +225,19 @@ function save_transaction_form(event){
         document.getElementById('rate').value,
         document.getElementById('seller_comission').value,
         document.getElementById('buyer_comission').value,
-        document.getElementById('date').value
+        document.getElementById('date').value,
+        save_mode
         ]
+
+
         if(save_flag_new==0){
 
-        insert_query = `UPDATE TRANSACTIONs SET buyer = ${upda_array[0]}, seller = ${upda_array[1]}, jeans="${upda_array[2]}", mesasure=${upda_array[3]}, bags=${upda_array[4]}, rate=${upda_array[5]}, buy_commsion_rate=${upda_array[7]}, sell_comission_rate=${upda_array[6]}, trans_date="${upda_array[8]}" WHERE trans_id=${current_trans_id} `;
+        insert_query = `UPDATE TRANSACTIONs SET buyer = ${upda_array[0]}, seller = ${upda_array[1]}, jeans="${upda_array[2]}", mesasure=${upda_array[3]}, bags=${upda_array[4]}, rate=${upda_array[5]}, buy_commsion_rate=${upda_array[7]}, sell_comission_rate=${upda_array[6]}, trans_date="${upda_array[8]}", mode="${upda_array[9]}" WHERE trans_id=${current_trans_id}`;
 
         }
         else if (save_flag_new==1) {
-        insert_query = `INSERT INTO "TRANSACTIONs"(trans_date, buyer, seller, jeans, mesasure, bags, rate, buy_commsion_rate, sell_comission_rate) VALUES("${upda_array[8]}", ${upda_array[0]}, ${upda_array[1]}, "${upda_array[2]}", ${upda_array[3]}, ${upda_array[4]}, ${upda_array[5]}, ${upda_array[7]}, ${upda_array[6]}) `;
+        console.log(upda_array);
+        insert_query = `INSERT INTO "TRANSACTIONs"(trans_date, buyer, seller, jeans, mesasure, bags, rate, buy_commsion_rate, sell_comission_rate, mode) VALUES("${upda_array[8]}", ${upda_array[0]}, ${upda_array[1]}, "${upda_array[2]}", ${upda_array[3]}, ${upda_array[4]}, ${upda_array[5]}, ${upda_array[7]}, ${upda_array[6]}, "${upda_array[9]}")`;
         }
         ipcRenderer.send('save_transaction_query',insert_query);
         ipcRenderer.on('success_transaction_query',(event, args)=>{
@@ -225,9 +253,6 @@ function save_transaction_form(event){
         let forward_result = ipcRenderer.sendSync('forward_trans_query',current_trans_id);
         console.log(forward_result);
             if (forward_result !=null){
-        trans_form.style.display='block';
-        edit_btn.disabled=false;
-
 
         /// Setting the formmode
 
@@ -243,15 +268,26 @@ function save_transaction_form(event){
         document.getElementById('buyer_comission').value = forward_result.buy_commsion_rate;
         document.getElementById('buyer').selectedIndex = forward_result.buyer;
         document.getElementById('seller').selectedIndex = forward_result.seller;
+        if(forward_result.mode == 'w'){
+          document.getElementById('weight').checked = true;
+        }else if (forward_result.mode == 'u') {
+          document.getElementById('unit').checked = true;
+        }else{
+          document.getElementById('percent').checked = true
+        }
 
         ///Readonlymode
         read_only_mode();
+
         } else{
             forward_btn.disabled = true;
+
         }
         if (backward_btn.disabled==true){
           backward_btn.disabled=false;
+
         }
+
 
     }
 //Backward Arrow function
@@ -259,8 +295,7 @@ function backward_arrow(){
     let backward_result = ipcRenderer.sendSync('backward_trans_query',current_trans_id);
         console.log(backward_result);
             if (backward_result !=null){
-        trans_form.style.display='block';
-        edit_btn.disabled=false;
+
 
         /// Setting the formmode
 
@@ -277,14 +312,25 @@ function backward_arrow(){
         document.getElementById('buyer').selectedIndex = backward_result.buyer;
         document.getElementById('seller').selectedIndex = backward_result.seller;
 
+        if(backward_result.mode == 'w'){
+          document.getElementById('weight').checked = true;
+        }else if (backward_result.mode == 'u') {
+          document.getElementById('unit').checked = true;
+        }else{
+          document.getElementById('percent').checked = true
+        }
+
         ///Readonlymode
         read_only_mode();
         } else{
             backward_btn.disabled = true;
+
         }
         if (forward_btn.disabled==true){
           forward_btn.disabled=false;
+          
         }
+
 
 }
 
@@ -304,6 +350,14 @@ function last_record_fetch(){
   document.getElementById('buyer_comission').value = last_result.buy_commsion_rate;
   document.getElementById('buyer').selectedIndex = last_result.buyer;
   document.getElementById('seller').selectedIndex = last_result.seller;
+  if(last_result.mode == 'w'){
+    document.getElementById('weight').checked = true;
+  }else if (last_result.mode == 'u') {
+    document.getElementById('unit').checked = true;
+  }else{
+    document.getElementById('percent').checked = true
+  }
+
 }
   read_only_mode();
 

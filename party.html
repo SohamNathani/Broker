@@ -201,6 +201,7 @@
     function last_record_fetch(){
       let last_result = ipcRenderer.sendSync('last party entry',"");
       //console.log(last_result);
+      if(last_result!=null){
       document.getElementById('party-id').innerHTML = last_result.party_id;
       current_party_id = last_result.party_id;
       document.getElementById("name").value = last_result.name;
@@ -209,6 +210,7 @@
       document.getElementById("state").value = last_result.state;
       document.getElementById("phone").value = last_result.phone;
 
+    }
       read_only_mode();
 
       }

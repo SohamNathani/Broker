@@ -54,7 +54,7 @@ ipcMain.on('db selection',(event,arg)=>{
             console.log('Connected to the brokers database.');});
   backup_link = arg[0];
   userDB.run('CREATE TABLE IF NOT EXISTS PARTY(party_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, city TEXT NOT NULL, gst TEXT, phone TEXT, state TEXT);');
-  userDB.run('CREATE TABLE IF NOT EXISTS TRANSACTIONs(trans_id INTEGER PRIMARY KEY AUTOINCREMENT,trans_date TEXT NOT NULL, buyer INTEGER NOT NULL, seller INTEGER NOT NULL, jeans TEXT NOT NULL, mesasure INTEGER NOT NULL, bags INTEGER NOT NULL, rate  INTEGER, buy_commsion_rate INTEGER NOT NULL, sell_comission_rate INTEGER NOT NULL, FOREIGN KEY(buyer) REFERENCES PARTY(id), FOREIGN KEY(seller) REFERENCES PARTY(id) );');
+  userDB.run('CREATE TABLE IF NOT EXISTS TRANSACTIONs(trans_id INTEGER PRIMARY KEY AUTOINCREMENT,trans_date TEXT NOT NULL, buyer INTEGER NOT NULL, seller INTEGER NOT NULL, jeans TEXT NOT NULL, mesasure INTEGER NOT NULL, bags INTEGER NOT NULL, rate  INTEGER, buy_commsion_rate INTEGER NOT NULL, sell_comission_rate INTEGER NOT NULL,mode TEXT NOT NULL , FOREIGN KEY(buyer) REFERENCES PARTY(id), FOREIGN KEY(seller) REFERENCES PARTY(id) );');
   userDB.run('CREATE TABLE IF NOT EXISTS HEADER(name TEXT NOT NULL, add_1 TEXT NOT NULL, add_2 TEXT NOT NULL, phone TEXT NOT NULL);');
   event.returnValue = `Connected to selected db - ${arg[0]}`;
 
@@ -71,7 +71,7 @@ ipcMain.on('db creation',(event,arg)=>{
             console.log('Connected to the brokers database.');});
   backup_link = arg;
   userDB.run('CREATE TABLE IF NOT EXISTS PARTY(party_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, city TEXT NOT NULL, gst TEXT, phone TEXT, state TEXT);');
-  userDB.run('CREATE TABLE IF NOT EXISTS TRANSACTIONs(trans_id INTEGER PRIMARY KEY AUTOINCREMENT,trans_date TEXT NOT NULL, buyer INTEGER NOT NULL, seller INTEGER NOT NULL, jeans TEXT NOT NULL, mesasure INTEGER NOT NULL, bags INTEGER NOT NULL, rate  INTEGER, buy_commsion_rate INTEGER NOT NULL, sell_comission_rate INTEGER NOT NULL, FOREIGN KEY(buyer) REFERENCES PARTY(id), FOREIGN KEY(seller) REFERENCES PARTY(id) );');
+  userDB.run('CREATE TABLE IF NOT EXISTS TRANSACTIONs(trans_id INTEGER PRIMARY KEY AUTOINCREMENT,trans_date TEXT NOT NULL, buyer INTEGER NOT NULL, seller INTEGER NOT NULL, jeans TEXT NOT NULL, mesasure INTEGER NOT NULL, bags INTEGER NOT NULL, rate  INTEGER, buy_commsion_rate INTEGER NOT NULL, sell_comission_rate INTEGER NOT NULL,mode TEXT NOT NULL , FOREIGN KEY(buyer) REFERENCES PARTY(id), FOREIGN KEY(seller) REFERENCES PARTY(id) );');
   userDB.run('CREATE TABLE IF NOT EXISTS HEADER(name TEXT NOT NULL, add_1 TEXT NOT NULL, add_2 TEXT NOT NULL, phone TEXT NOT NULL);');
   event.returnValue = `Connected to selected db - ${arg[0]}`;
 })
