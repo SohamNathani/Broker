@@ -64,15 +64,17 @@
     </form>
     <div class="trans_btn">
       <button onclick="add_function()" id="add-btn">Add</button>
-      <button onclick="edit_function()" id="edit-btn" disabled>Edit</button>
+      <button onclick="edit_function()" id="edit-btn">Edit</button>
       <button onclick="search_function()" id="search-btn">Search</button>
-      <button onclick="forward_arrow()" id="forward-btn" disabled> > </button>
-      <button onclick="backward_arrow()" id="backward-btn" disabled> < </button>
+      <button onclick="forward_arrow()" id="forward-btn"> > </button>
+      <button onclick="backward_arrow()" id="backward-btn"> < </button>
+      <button onclick="cancel_function()" id="cancel-btn"> Cancel</button>
     </div>
 
   </div>
 </body>
 <script>
+    let cancel_btn = document.getElementById('cancel-btn');
     //INSERTION QUERY
     var insert_query;
     // CURRENT TRANSACTION ID
@@ -328,10 +330,14 @@ function backward_arrow(){
         }
         if (forward_btn.disabled==true){
           forward_btn.disabled=false;
-          
+
         }
 
 
+}
+
+function cancel_function(){
+  read_only_mode()
 }
 
 function last_record_fetch(){
@@ -371,6 +377,7 @@ function last_record_fetch(){
 
 //READ MODE FUNCTION
     function read_only_mode(){
+      cancel_btn.disabled = true;
        save_btn.disabled = true;
         edit_btn.disabled=false;
         search_btn.disabled = false;
@@ -395,6 +402,7 @@ function last_record_fetch(){
 
 //WRITE MODE FUNCTION
     function write_also_mode(){
+      cancel_btn.disabled = false;
       save_btn.disabled = false;
       edit_btn.disabled=true;
       search_btn.disabled = true;
