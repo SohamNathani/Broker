@@ -3,22 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/start.css">
     <title>Document</title>
 </head>
 <body>
-    <form action="" onsubmit="Javascript:send_setting_form(event)">
-        <label for="name">Name</label>
-        <input type="text" id="name">
-        <label for="add_line_1">Address Line 1</label>
-        <input type="text" id="add_line_1">
-        <label for="add_line_2">Address Line 2</label>
-        <input type="text" id="add_line_2">
-        <label for="phone_no">Phone No</label>
-        <input type="text" id="phone_no">
-        <input type='submit' value='Update'>
-        
-        
-    </form>
+  <div class="grid-container">
+      <div class='nav'>
+      <ul>
+          <li><a href="party.html">Party</a></li>
+          <li><a href="transaction.html">Transaction </a></li>
+          <li><a href="report.html">Report</a></li>
+          <li><a href="setting.html">Setting</a></li>
+          <li><a href="index.html">Start Menu</a></li>
+          <li><a href="index1.html">Choose Company</a></li>
+      </ul>
+      <button onclick=create_backup() id="backup-btn" disabled>Create Backup</button>
+      </div>
+      <div class="sidepanel">
+        <form action="" onsubmit="Javascript:send_setting_form(event)">
+            <label for="name">Name</label>
+            <input type="text" id="name">
+            <label for="add_line_1">Address Line 1</label>
+            <input type="text" id="add_line_1">
+            <label for="add_line_2">Address Line 2</label>
+            <input type="text" id="add_line_2">
+            <label for="phone_no">Phone No</label>
+            <input type="text" id="phone_no">
+            <label for="pan">PAN Number</label>
+            <input type="text" id="pan">
+            <input type='submit' value='Update'>
+
+
+        </form>
+      </div>
+
 
     <script>
         var in_Db = 1;
@@ -32,6 +50,7 @@
             document.getElementById('add_line_1').value = data.add_1;
             document.getElementById('add_line_2').value = data.add_2;
             document.getElementById('phone_no').value = data.phone;
+            document.getElementById('pan').value = data.pan;
             }else{
                 in_Db = 0
             }
@@ -42,11 +61,12 @@
             document.getElementById('name').value,
             document.getElementById('add_line_1').value,
             document.getElementById('add_line_2').value,
-            document.getElementById('phone_no').value]
+            document.getElementById('phone_no').value,
+            document.getElementById('pan').value]
             if (in_Db==1){
-            ipcRenderer.send('setting update',`UPDATE HEADER SET name = "${arr_sett[0]}",add_1 = "${arr_sett[1]}",add_2 = "${arr_sett[2]}",phone = "${arr_sett[3]}"`);
+            ipcRenderer.send('setting update',`UPDATE HEADER SET name = "${arr_sett[0]}",add_1 = "${arr_sett[1]}",add_2 = "${arr_sett[2]}",phone = "${arr_sett[3]}", pan = "${arr_sett[4]}"`);
         }else{
-            ipcRenderer.send('setting update',`INSERT INTO HEADER(name, add_1, add_2, phone) VALUES("${arr_sett[0]}","${arr_sett[1]}","${arr_sett[2]}","${arr_sett[3]}")`);
+            ipcRenderer.send('setting update',`INSERT INTO HEADER(name, add_1, add_2, phone, pan) VALUES("${arr_sett[0]}","${arr_sett[1]}","${arr_sett[2]}","${arr_sett[3]}","${arr_sett[4]}")`);
         }
     }
 

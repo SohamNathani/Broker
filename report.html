@@ -3,17 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/start.css">
     <title>Document</title>
 </head>
 <body>
+  <div class="grid-container">
+      <div class='nav'>
+      <ul>
+          <li><a href="party.html">Party</a></li>
+          <li><a href="transaction.html">Transaction </a></li>
+          <li><a href="report.html">Report</a></li>
+          <li><a href="setting.html">Setting</a></li>
+          <li><a href="index.html">Start Menu</a></li>
+          <li><a href="index1.html">Choose Company</a></li>
+      </ul>
+      <button onclick=create_backup() id="backup-btn" disabled>Create Backup</button>
+      </div>
+      <div class="sidepanel">
    <h1>Report Page</h1>
     <label for="pdf_party_name"></label>
         <select name="" id="pdf_party_name">
             <option value="">----Select Party----</option>
         </select>
-    <input type="submit" value='See Pdf' onclick='open_report_form()'>    
+    <input type="submit" value='See Pdf' onclick='open_report_form()'>
 
-    
+  </div>
    <script>
        var bill_window;
        const ipcRenderer = require('electron').ipcRenderer;
@@ -28,7 +42,7 @@
              option.value = optionss.party_id;
              option.innerHTML = optionss.name;
              //console.log(option);
-             
+
              //seller.appendChild(option);
              pdf_party_name.appendChild(option);
          });
@@ -46,8 +60,10 @@
             console.log(party_selected);
             //bill_window.maximize()
             let response = ipcRenderer.sendSync('send detail',party_selected)
+            bill_window.maximize()
             bill_window.loadFile('bill.html');
-            
+
+
 
        }
     //    ipcRenderer.on('give_my_webcontent', (event,args)=>{

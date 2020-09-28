@@ -8,7 +8,7 @@
 <body>
     <h2 id="bill_prop">Jagdamba Brokers</h2>
     <h3><span id="prop_add1">Infront of Balaiji Bank</span>, <span id="prop_add2">Jaisthambh Chowk Satna</span></h3>
-    <h4>Phone No: <span id="prop_phone">9425394490</span></h4>
+    <h4>PAN No: <span id="prop_pan">ATETPEPWER</span>,  Phone No: <span id="prop_phone">9425394490</span></h4>
     <button id="print-pdf" onclick='saveInvoiceToStorage()'>Print</button>
     <h4>Bill for <span id="bill_for_party"></span></h4>
     <table id="bill_table">
@@ -33,6 +33,7 @@
             document.getElementById('prop_add1').innerHTML = arg.add_1;
             document.getElementById('prop_add2').innerHTML = arg.add_2;
             document.getElementById('prop_phone').innerHTML = arg.phone;
+            document.getElementById('prop_pan').innerHTML = arg.pan;
         })
         ipcRenderer.send('load bill rows','');
         ipcRenderer.on('load bill rows completed',(event,arg)=>{
