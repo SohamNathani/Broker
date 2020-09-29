@@ -142,6 +142,20 @@ function save_transaction_form(event){
             break;
       }
     }
+
+    let brokerage_seller;
+    let brokerage_buyer;
+    if (save_mode == 'w'){
+      brokerage_seller = Math.floor((document.getElementById('seller_comission').value * document.getElementById('measure').value * document.getElementById('bags').value)/100)
+      brokerage_buyer = Math.floor((document.getElementById('buyer_comission').value * document.getElementById('measure').value * document.getElementById('bags').value)/100)
+    }else if (save_mode == 'u') {
+      brokerage_seller = document.getElementById('bags').value * document.getElementById('seller_comission').value;
+      brokerage_buyer = document.getElementById('bags').value * document.getElementById('buyer_comission').value;
+    }else{
+      brokerage_seller = Math.floor((document.getElementById('seller_comission').value * document.getElementById('measure').value * document.getElementById('bags').value * document.getElementById('rate').value)/100)
+      brokerage_buyer = Math.floor((document.getElementById('buyer_comission').value * document.getElementById('measure').value * document.getElementById('bags').value * document.getElementById('rate').value)/100)
+    }
+
       console.log(save_mode);
     let upda_array=[
     document.getElementById('buyer').selectedIndex,
@@ -153,18 +167,20 @@ function save_transaction_form(event){
     document.getElementById('seller_comission').value,
     document.getElementById('buyer_comission').value,
     document.getElementById('date').value,
-    save_mode
+    save_mode,
+    brokerage_seller,
+    brokerage_buyer
     ]
 
 
     if(save_flag_new==0){
 
-    insert_query = `UPDATE TRANSACTIONs SET buyer = ${upda_array[0]}, seller = ${upda_array[1]}, jeans="${upda_array[2]}", mesasure=${upda_array[3]}, bags=${upda_array[4]}, rate=${upda_array[5]}, buy_commsion_rate=${upda_array[7]}, sell_comission_rate=${upda_array[6]}, trans_date="${upda_array[8]}", mode="${upda_array[9]}" WHERE trans_id=${current_trans_id}`;
+    insert_query = `UPDATE TRANSACTIONs SET buyer = ${upda_array[0]}, seller = ${upda_array[1]}, jeans="${upda_array[2]}", mesasure=${upda_array[3]}, bags=${upda_array[4]}, rate=${upda_array[5]}, buy_commsion_rate=${upda_array[7]}, sell_comission_rate=${upda_array[6]}, trans_date="${upda_array[8]}", mode="${upda_array[9]}", brokerage_seller = ${upda_array[10]}, brokerage_buyer = ${upda_array[11]} WHERE trans_id=${current_trans_id}`;
 
     }
     else if (save_flag_new==1) {
     console.log(upda_array);
-    insert_query = `INSERT INTO "TRANSACTIONs"(trans_date, buyer, seller, jeans, mesasure, bags, rate, buy_commsion_rate, sell_comission_rate, mode) VALUES("${upda_array[8]}", ${upda_array[0]}, ${upda_array[1]}, "${upda_array[2]}", ${upda_array[3]}, ${upda_array[4]}, ${upda_array[5]}, ${upda_array[7]}, ${upda_array[6]}, "${upda_array[9]}")`;
+    insert_query = `INSERT INTO "TRANSACTIONs"(trans_date, buyer, seller, jeans, mesasure, bags, rate, buy_commsion_rate, sell_comission_rate, mode, brokerage_seller, brokerage_buyer) VALUES("${upda_array[8]}", ${upda_array[0]}, ${upda_array[1]}, "${upda_array[2]}", ${upda_array[3]}, ${upda_array[4]}, ${upda_array[5]}, ${upda_array[7]}, ${upda_array[6]}, "${upda_array[9]}", ${upda_array[10]}, ${upda_array[11]})`;
     }
     ipcRenderer.send('save_transaction_query',insert_query);
     ipcRenderer.on('success_transaction_query',(event, args)=>{

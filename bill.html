@@ -62,10 +62,10 @@
 
                 if (arg[0]==arg[1][i].seller){
                 td_name.innerHTML = arg[1][i].buyer_name;
-                td_brokerage.innerHTML = Math.floor((arg[1][i].sell_comission_rate*arg[1][i].mesasure*arg[1][i].bags)/100)
+                td_brokerage.innerHTML = arg[1][i].brokerage_seller;
                 }else{
                     td_name.innerHTML = arg[1][i].seller_name;
-                    td_brokerage.innerHTML = Math.floor((arg[1][i].buy_commsion_rate*arg[1][i].mesasure*arg[1][i].bags)/100)
+                    td_brokerage.innerHTML =arg[1][i].brokerage_buyer;
                 }
 
             }

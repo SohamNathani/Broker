@@ -54,7 +54,7 @@ ipcMain.on('db selection',(event,arg)=>{
             console.log('Connected to the brokers database.');});
   backup_link = arg[0];
   userDB.run('CREATE TABLE IF NOT EXISTS PARTY(party_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, city TEXT NOT NULL, gst TEXT, phone TEXT, state TEXT);');
-  userDB.run('CREATE TABLE IF NOT EXISTS TRANSACTIONs(trans_id INTEGER PRIMARY KEY AUTOINCREMENT,trans_date TEXT NOT NULL, buyer INTEGER NOT NULL, seller INTEGER NOT NULL, jeans TEXT NOT NULL, mesasure INTEGER NOT NULL, bags INTEGER NOT NULL, rate  INTEGER, buy_commsion_rate INTEGER NOT NULL, sell_comission_rate INTEGER NOT NULL,mode TEXT NOT NULL , FOREIGN KEY(buyer) REFERENCES PARTY(id), FOREIGN KEY(seller) REFERENCES PARTY(id) );');
+  userDB.run('CREATE TABLE IF NOT EXISTS TRANSACTIONs(trans_id INTEGER PRIMARY KEY AUTOINCREMENT,trans_date TEXT NOT NULL, buyer INTEGER NOT NULL, seller INTEGER NOT NULL, jeans TEXT NOT NULL, mesasure INTEGER NOT NULL, bags INTEGER NOT NULL, rate  INTEGER, buy_commsion_rate INTEGER NOT NULL, sell_comission_rate INTEGER NOT NULL,mode TEXT NOT NULL, brokerage_seller INTEGER NOT NULL, brokerage_buyer INTEGER NOT NULL , FOREIGN KEY(buyer) REFERENCES PARTY(id), FOREIGN KEY(seller) REFERENCES PARTY(id) );');
   userDB.run('CREATE TABLE IF NOT EXISTS HEADER(name TEXT NOT NULL, add_1 TEXT NOT NULL, add_2 TEXT NOT NULL, phone TEXT NOT NULL);');
   event.returnValue = `Connected to selected db - ${arg[0]}`;
 
@@ -71,7 +71,7 @@ ipcMain.on('db creation',(event,arg)=>{
             console.log('Connected to the brokers database.');});
   backup_link = arg;
   userDB.run('CREATE TABLE IF NOT EXISTS PARTY(party_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, city TEXT NOT NULL, gst TEXT, phone TEXT, state TEXT);');
-  userDB.run('CREATE TABLE IF NOT EXISTS TRANSACTIONs(trans_id INTEGER PRIMARY KEY AUTOINCREMENT,trans_date TEXT NOT NULL, buyer INTEGER NOT NULL, seller INTEGER NOT NULL, jeans TEXT NOT NULL, mesasure INTEGER NOT NULL, bags INTEGER NOT NULL, rate  INTEGER, buy_commsion_rate INTEGER NOT NULL, sell_comission_rate INTEGER NOT NULL,mode TEXT NOT NULL , FOREIGN KEY(buyer) REFERENCES PARTY(id), FOREIGN KEY(seller) REFERENCES PARTY(id) );');
+  userDB.run('CREATE TABLE IF NOT EXISTS TRANSACTIONs(trans_id INTEGER PRIMARY KEY AUTOINCREMENT,trans_date TEXT NOT NULL, buyer INTEGER NOT NULL, seller INTEGER NOT NULL, jeans TEXT NOT NULL, mesasure INTEGER NOT NULL, bags INTEGER NOT NULL, rate  INTEGER, buy_commsion_rate INTEGER NOT NULL, sell_comission_rate INTEGER NOT NULL,mode TEXT NOT NULL , brokerage_seller INTEGER NOT NULL, brokerage_buyer INTEGER NOT NULL, FOREIGN KEY(buyer) REFERENCES PARTY(id), FOREIGN KEY(seller) REFERENCES PARTY(id) );');
   userDB.run('CREATE TABLE IF NOT EXISTS HEADER(name TEXT NOT NULL, add_1 TEXT NOT NULL, add_2 TEXT NOT NULL, phone TEXT NOT NULL, pan TEXT NOT NULL);');
   event.returnValue = `Connected to selected db - ${arg[0]}`;
 })
@@ -178,7 +178,7 @@ ipcMain.on('load bill', (event,args)=>{
 let broker_row = 0
 ipcMain.on('send detail',(event, arg)=>{
   console.log(arg)
-  userDB.all('SELECT trans_date,jeans,mesasure,rate,bags,buyer,seller,sell_comission_rate,buy_commsion_rate,ps.name as seller_name,pb.name as buyer_name FROM TRANSACTIONs t JOIN PARTY ps on t.seller = ps.party_id JOIN PARTY pb on t.buyer = pb.party_id WHERE seller = ? or buyer = ?',[arg,arg],(err, rows)=>{
+  userDB.all('SELECT trans_date,jeans,mesasure,rate,bags,buyer,seller,brokerage_seller,brokerage_buyer,ps.name as seller_name,pb.name as buyer_name FROM TRANSACTIONs t JOIN PARTY ps on t.seller = ps.party_id JOIN PARTY pb on t.buyer = pb.party_id WHERE seller = ? or buyer = ?',[arg,arg],(err, rows)=>{
     if(err){
       throw err;
 
