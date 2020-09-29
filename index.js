@@ -281,11 +281,39 @@ ipcMain.on("last transaction entry", (event,arg)=>{
     event.returnValue = row[0]
   })
 })
+//Fetching party for address book
 ipcMain.on('party for address', (event, arg)=>{
   userDB.all('SELECT * FROM PARTY',[], (err, row)=>{
     if(err){
       throw err;
     }console.log(row)
     event.returnValue = row
+  })
+})
+
+ipcMain.on('load all bill', (event,args)=>{
+  userDB.all('SELECT * FROM HEADER',[],(err,rows)=>{
+    if(err){
+      throw err;
+    }
+    console.log(rows)
+    event.reply('load all bill completed',rows[0]);
+})
+})
+//
+ipcMain.on('load party detail for all', (event, arg)=>{
+  userDB.all('SELECT party_id,name,city FROM PARTY', [], (err,rows)=>{
+    if(err){
+      throw err;
+    }
+    event.returnValue = rows
+  })
+})
+ipcMain.on('load transaction detail for all', (event, arg)=>{
+  userDB.all('SELECT buyer,seller,brokerage_buyer,brokerage_seller FROM TRANSACTIONs', [], (err,rows)=>{
+    if(err){
+      throw err;
+    }
+    event.returnValue = rows
   })
 })

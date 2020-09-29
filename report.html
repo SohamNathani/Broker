@@ -27,10 +27,12 @@
         </select>
     <input type="submit" value='See Pdf' onclick='open_report_form()'>
     <input type="submit" value="Open Address Book" onclick='open_address_book()'>
+    <input type="submit" value="All report" onclick="open_all_report()">
 
   </div>
    <script>
        var bill_window;
+       var all_window;
        const {dialog} = require('electron').remote;
        const ipcRenderer = require('electron').ipcRenderer;
        const BrowserWindow = require('electron').remote.BrowserWindow;
@@ -102,6 +104,25 @@
       })
 
     }
+    function open_all_report(){
+      all_window = new BrowserWindow({
+     width: 400,
+     height: 300,
+     webPreferences: {
+         nodeIntegration: true
+}
+});
+
+     //bill_window.maximize()
+
+     all_window.maximize()
+     all_window.loadFile('all_bill.html');
+
+
+
+}
+
+    
 
    </script>
 </body>
