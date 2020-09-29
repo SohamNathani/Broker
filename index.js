@@ -281,3 +281,11 @@ ipcMain.on("last transaction entry", (event,arg)=>{
     event.returnValue = row[0]
   })
 })
+ipcMain.on('party for address', (event, arg)=>{
+  userDB.all('SELECT * FROM PARTY',[], (err, row)=>{
+    if(err){
+      throw err;
+    }console.log(row)
+    event.returnValue = row
+  })
+})

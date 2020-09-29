@@ -26,10 +26,12 @@
             <option value="">----Select Party----</option>
         </select>
     <input type="submit" value='See Pdf' onclick='open_report_form()'>
+    <input type="submit" value="Open Address Book" onclick='open_address_book()'>
 
   </div>
    <script>
        var bill_window;
+       const {dialog} = require('electron').remote;
        const ipcRenderer = require('electron').ipcRenderer;
        const BrowserWindow = require('electron').remote.BrowserWindow;
        let pdf_party_name = document.getElementById('pdf_party_name')
@@ -70,7 +72,36 @@
     //        console.log(bill_window.webContents)
     //    })
 
+    function open_address_book(){
+      let parties = ipcRenderer.sendSync('party for address','');
+      var Excel = require('exceljs');
+      var workbook = new Excel.Workbook();
+      workbook.creator = 'SNcion';
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, '0');
+      var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+      var yyyy = today.getFullYear();
 
+      workbook.created = new Date(yyyy, mm, dd);
+      var sheet = workbook.addWorksheet('Sheet 1');
+      sheet.columns = [
+        {header: 'Id', key: "id"},
+        {header: 'Party Name', key: "name"},
+        {header: 'City', key: "city"},
+        {header: 'Phone No.', key: "contact"},
+        {header: 'GST', key: "gst"},
+        {header: 'State', key:"state"}
+      ]
+      for (var i = 0; i < parties.length; i++) {
+          sheet.addRow({id: parties[i].party_id, name: parties[i].name, city:parties[i].city, contact: parties[i].phone, gst: parties[i].gst, state: parties[i].state });
+      }
+      let file_for_address =  dialog.showSaveDialogSync();
+      workbook.xlsx.writeFile(file_for_address + ".xlsx")
+      .then(function() {
+        console.log('File saved');
+      })
+
+    }
 
    </script>
 </body>
