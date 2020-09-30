@@ -29,14 +29,26 @@
     <input type="submit" value="Open Address Book" onclick='open_address_book()'>
     <input type="submit" value="All report" onclick="open_all_report()">
 
+    <label for="party-with-date">
+        <select id="party-with-date" name="">
+          <option value="">----Select Party----</option>
+        </select>
+    </label>
+        <input type="date" name="" id="date_from_bill" value="">
+        <input type="date" name="" id="date_to_bill" value="">
+        <input type="button"  value="See Bill" onclick="open_report_date_form()">
+
+
   </div>
    <script>
        var bill_window;
        var all_window;
+       var bill_date_window;
        const {dialog} = require('electron').remote;
        const ipcRenderer = require('electron').ipcRenderer;
        const BrowserWindow = require('electron').remote.BrowserWindow;
        let pdf_party_name = document.getElementById('pdf_party_name')
+       let pdf_party_with_date = document.getElementById('party-with-date')
        //Call for party loading
        ipcRenderer.send('load_party_name','');
         //Party name loaded
@@ -45,11 +57,18 @@
              var option = document.createElement('option');
              option.value = optionss.party_id;
              option.innerHTML = optionss.name;
-             //console.log(option);
 
-             //seller.appendChild(option);
-             pdf_party_name.appendChild(option);
+             pdf_party_with_date.appendChild(option);
+
          });
+         arg.forEach(optionss => {
+              var option = document.createElement('option');
+              option.value = optionss.party_id;
+              option.innerHTML = optionss.name;
+
+              pdf_party_name.appendChild(option);
+
+          });
        })
        //Creating bill window
        function open_report_form(event){
@@ -74,7 +93,7 @@
     //        console.log(bill_window.webContents)
     //    })
 
-    function open_address_book(){
+function open_address_book(){
       let parties = ipcRenderer.sendSync('party for address','');
       var Excel = require('exceljs');
       var workbook = new Excel.Workbook();
@@ -104,25 +123,51 @@
       })
 
     }
-    function open_all_report(){
+
+
+function open_all_report(){
       all_window = new BrowserWindow({
      width: 400,
      height: 300,
      webPreferences: {
          nodeIntegration: true
-}
-});
+       }
+     });
 
      //bill_window.maximize()
 
      all_window.maximize()
      all_window.loadFile('all_bill.html');
+}
 
+
+function open_report_date_form(){
+  bill_date_window = new BrowserWindow({
+    width: 400,
+    height: 300,
+    webPreferences: {
+     nodeIntegration: true
+   }
+  });
+
+  let party_date_selected =  document.getElementById('party-with-date').selectedIndex;
+  let party_date_from = document.getElementById('date_from_bill').value;
+  let party_date_to = document.getElementById('date_to_bill').value;
+  let response_with_date = ipcRenderer.sendSync('send detail with date',[party_date_selected, date_to_days(party_date_from), date_to_days(party_date_to)]);
+  console.log(response_with_date);
+  bill_date_window.maximize()
+  bill_date_window.loadFile('date_bill.html')
 
 
 }
 
-    
+function date_to_days(date){
+  let date1 = new Date('2020-01-01')
+  let date2 = new Date(date)
+  return (date2.getTime() - date1.getTime())/(1000*3600*24)
+}
+
+
 
    </script>
 </body>

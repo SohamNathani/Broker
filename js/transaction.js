@@ -98,7 +98,7 @@ ipcRenderer.on('search_result', (event,arg)=>{
     /// Setting the formmode
 
     current_trans_id = arg.trans_id
-    document.getElementById('date').value = arg.trans_date;
+    document.getElementById('date').value = days_to_date(parseInt(arg.trans_date));
     document.getElementById('Transid').innerHTML = arg.trans_id;
     document.getElementById('jeans').value = arg.jeans;
     document.getElementById('measure').value = arg.mesasure;
@@ -166,7 +166,7 @@ function save_transaction_form(event){
     document.getElementById('rate').value,
     document.getElementById('seller_comission').value,
     document.getElementById('buyer_comission').value,
-    document.getElementById('date').value,
+    date_to_days(document.getElementById('date').value),
     save_mode,
     brokerage_seller,
     brokerage_buyer
@@ -175,12 +175,12 @@ function save_transaction_form(event){
 
     if(save_flag_new==0){
 
-    insert_query = `UPDATE TRANSACTIONs SET buyer = ${upda_array[0]}, seller = ${upda_array[1]}, jeans="${upda_array[2]}", mesasure=${upda_array[3]}, bags=${upda_array[4]}, rate=${upda_array[5]}, buy_commsion_rate=${upda_array[7]}, sell_comission_rate=${upda_array[6]}, trans_date="${upda_array[8]}", mode="${upda_array[9]}", brokerage_seller = ${upda_array[10]}, brokerage_buyer = ${upda_array[11]} WHERE trans_id=${current_trans_id}`;
+    insert_query = `UPDATE TRANSACTIONs SET buyer = ${upda_array[0]}, seller = ${upda_array[1]}, jeans="${upda_array[2]}", mesasure=${upda_array[3]}, bags=${upda_array[4]}, rate=${upda_array[5]}, buy_commsion_rate=${upda_array[7]}, sell_comission_rate=${upda_array[6]}, trans_date=${upda_array[8]}, mode="${upda_array[9]}", brokerage_seller = ${upda_array[10]}, brokerage_buyer = ${upda_array[11]} WHERE trans_id=${current_trans_id}`;
 
     }
     else if (save_flag_new==1) {
     console.log(upda_array);
-    insert_query = `INSERT INTO "TRANSACTIONs"(trans_date, buyer, seller, jeans, mesasure, bags, rate, buy_commsion_rate, sell_comission_rate, mode, brokerage_seller, brokerage_buyer) VALUES("${upda_array[8]}", ${upda_array[0]}, ${upda_array[1]}, "${upda_array[2]}", ${upda_array[3]}, ${upda_array[4]}, ${upda_array[5]}, ${upda_array[7]}, ${upda_array[6]}, "${upda_array[9]}", ${upda_array[10]}, ${upda_array[11]})`;
+    insert_query = `INSERT INTO "TRANSACTIONs"(trans_date, buyer, seller, jeans, mesasure, bags, rate, buy_commsion_rate, sell_comission_rate, mode, brokerage_seller, brokerage_buyer) VALUES(${upda_array[8]}, ${upda_array[0]}, ${upda_array[1]}, "${upda_array[2]}", ${upda_array[3]}, ${upda_array[4]}, ${upda_array[5]}, ${upda_array[7]}, ${upda_array[6]}, "${upda_array[9]}", ${upda_array[10]}, ${upda_array[11]})`;
     }
     ipcRenderer.send('save_transaction_query',insert_query);
     ipcRenderer.on('success_transaction_query',(event, args)=>{
@@ -200,7 +200,7 @@ function forward_arrow(){
     /// Setting the formmode
 
     current_trans_id = forward_result.trans_id
-    document.getElementById('date').value = forward_result.trans_date;
+    document.getElementById('date').value = days_to_date(forward_result.trans_date);
     document.getElementById('Transid').innerHTML = forward_result.trans_id;
     document.getElementById('jeans').value = forward_result.jeans;
     document.getElementById('measure').value = forward_result.mesasure;
@@ -243,7 +243,7 @@ let backward_result = ipcRenderer.sendSync('backward_trans_query',current_trans_
     /// Setting the formmode
 
     current_trans_id = backward_result.trans_id
-    document.getElementById('date').value = backward_result.trans_date;
+    document.getElementById('date').value = days_to_date(backward_result.trans_date);
     document.getElementById('Transid').innerHTML = backward_result.trans_id;
     document.getElementById('jeans').value = backward_result.jeans;
     document.getElementById('measure').value = backward_result.mesasure;
@@ -286,7 +286,7 @@ let last_result = ipcRenderer.sendSync('last transaction entry',"");
 console.log(last_result);
 if(last_result !=null){
 current_trans_id = last_result.trans_id;
-document.getElementById('date').value = last_result.trans_date;
+document.getElementById('date').value = days_to_date(last_result.trans_date);
 document.getElementById('Transid').innerHTML = last_result.trans_id;
 document.getElementById('jeans').value = last_result.jeans;
 document.getElementById('measure').value = last_result.mesasure;
@@ -307,6 +307,7 @@ document.getElementById('percent').checked = true
 
 }
 read_only_mode();
+
 
 }
 
@@ -362,4 +363,34 @@ function write_also_mode(){
         for(var i=0;i<seller_childnodes.length;i++){
             buyer_childnodes[i].disabled = false;
         }
+}
+
+function date_to_days(date){
+  let date1 = new Date('2020-01-01')
+  let date2 = new Date(date)
+  return (date2.getTime() - date1.getTime())/(1000*3600*24)
+}
+
+function days_to_date(days){
+  let result = new Date('2020-01-01')
+  days = parseInt(days)
+
+  result.setDate(result.getDate() + days);
+
+  return formatDate(result);
+
+
+}
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
 }

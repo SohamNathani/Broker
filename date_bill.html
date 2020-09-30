@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2 id="bill_prop">Jagdamba Brokers</h2>
+    <h3><span id="prop_add1">Infront of Balaiji Bank</span>, <span id="prop_add2">Jaisthambh Chowk Satna</span></h3>
+    <h4>PAN No: <span id="prop_pan">ATETPEPWER</span>,  Phone No: <span id="prop_phone">9425394490</span></h4>
+    <button id="print-pdf" onclick='saveInvoiceToStorage()'>Print</button>
+    <h4>Bill for <span id="bill_for_party"></span></h4>
+    <table id="bill_table">
+        <tr>
+            <th>Date</th>
+            <th>Party Name</th>
+            <th>Jeans</th>
+            <th>Rate</th>
+            <th>Weight</th>
+            <th>Bags</th>
+            <th>Brokerage</th>
+        </tr>
+    </table>
+    <script>
+        const ipcRenderer = require('electron').ipcRenderer;
+        const remote = require("electron").remote;
+        const fs = remote.require('fs');
+        const shell = remote.shell;
+        ipcRenderer.send('load bill date','');
+        ipcRenderer.on('load bill date completed',(event,arg)=>{
+          if(arg!=null){
+            document.getElementById('bill_prop').innerHTML = arg.name;
+            document.getElementById('prop_add1').innerHTML = arg.add_1;
+            document.getElementById('prop_add2').innerHTML = arg.add_2;
+            document.getElementById('prop_phone').innerHTML = arg.phone;
+            document.getElementById('prop_pan').innerHTML = arg.pan;
+          }
+        })
+        ipcRenderer.send('load bill date rows','');
+        ipcRenderer.on('load bill date rows completed',(event,arg)=>{
+            console.log(arg[0]);
+            console.log(arg[1])
+            if (arg[0]==arg[1][0].seller){
+                document.getElementById('bill_for_party').innerHTML=arg[1][0].seller_name;
+            }else{
+                document.getElementById('bill_for_party').innerHTML=arg[1][0].buyer_name;
+            }
+            let myTable = document.getElementById('bill_table');
+            for(var i=0;i<arg[1].length;i++){
+                var newrow = myTable.insertRow(-1);
+                var td_date = newrow.insertCell(0)
+                var td_name = newrow.insertCell(1);
+                var td_jeans = newrow.insertCell(2);
+                var td_rate = newrow.insertCell(3);
+                var td_weight = newrow.insertCell(4);
+                var td_bags = newrow.insertCell(5);
+                var td_brokerage = newrow.insertCell(6);
+                td_jeans.innerHTML = arg[1][i].jeans;
+                td_rate.innerHTML = arg[1][i].rate;
+                td_weight.innerHTML = arg[1][i].mesasure;
+                td_bags.innerHTML = arg[1][i].bags;
+                td_date.innerHTML = arg[1][i].trans_date;
+
+                if (arg[0]==arg[1][i].seller){
+                td_name.innerHTML = arg[1][i].buyer_name;
+                td_brokerage.innerHTML = arg[1][i].brokerage_seller;
+                }else{
+                    td_name.innerHTML = arg[1][i].seller_name;
+                    td_brokerage.innerHTML =arg[1][i].brokerage_buyer;
+                }
+
+            }
+
+        })
+
+
+
+
+
+        // GENERATE PDF FUNCTION
+        function saveInvoiceToStorage(){
+            //console.log(remote.getCurrentWindow().webContents);
+            remote.getCurrentWindow().webContents.printToPDF({pageSize:'A4'}).then(data => {
+        fs.writeFile(`./your_bill.pdf`, data, (error) => {
+        if (error) throw error
+            console.log('Write PDF successfully.')
+            shell.openItem('./your_bill.pdf');
+            })
+        }).catch(error => {
+            console.log(error)
+        })
+}
+    </script>
+</body>
+</html>

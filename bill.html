@@ -29,11 +29,13 @@
         const shell = remote.shell;
         ipcRenderer.send('load bill','');
         ipcRenderer.on('load bill completed',(event,arg)=>{
+          if(arg!=null){
             document.getElementById('bill_prop').innerHTML = arg.name;
             document.getElementById('prop_add1').innerHTML = arg.add_1;
             document.getElementById('prop_add2').innerHTML = arg.add_2;
             document.getElementById('prop_phone').innerHTML = arg.phone;
             document.getElementById('prop_pan').innerHTML = arg.pan;
+          }
         })
         ipcRenderer.send('load bill rows','');
         ipcRenderer.on('load bill rows completed',(event,arg)=>{
