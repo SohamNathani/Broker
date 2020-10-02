@@ -56,6 +56,7 @@ ipcMain.on('db selection',(event,arg)=>{
   userDB.run('CREATE TABLE IF NOT EXISTS PARTY(party_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, city TEXT NOT NULL, gst TEXT, phone TEXT, state TEXT);');
   userDB.run('CREATE TABLE IF NOT EXISTS TRANSACTIONs(trans_id INTEGER PRIMARY KEY AUTOINCREMENT,trans_date INTEGER NOT NULL, buyer INTEGER NOT NULL, seller INTEGER NOT NULL, jeans TEXT NOT NULL, mesasure INTEGER NOT NULL, bags INTEGER NOT NULL, rate  INTEGER, buy_commsion_rate INTEGER NOT NULL, sell_comission_rate INTEGER NOT NULL,mode TEXT NOT NULL, brokerage_seller INTEGER NOT NULL, brokerage_buyer INTEGER NOT NULL , FOREIGN KEY(buyer) REFERENCES PARTY(id), FOREIGN KEY(seller) REFERENCES PARTY(id) );');
   userDB.run('CREATE TABLE IF NOT EXISTS HEADER(name TEXT NOT NULL, add_1 TEXT NOT NULL, add_2 TEXT NOT NULL, phone TEXT NOT NULL);');
+  userDB.run('CREATE TABLE IF NOT EXISTS JEANS(jeans_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL )');
   event.returnValue = `Connected to selected db - ${arg[0]}`;
 
 })
@@ -73,6 +74,7 @@ ipcMain.on('db creation',(event,arg)=>{
   userDB.run('CREATE TABLE IF NOT EXISTS PARTY(party_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, city TEXT NOT NULL, gst TEXT, phone TEXT, state TEXT);');
   userDB.run('CREATE TABLE IF NOT EXISTS TRANSACTIONs(trans_id INTEGER PRIMARY KEY AUTOINCREMENT,trans_date INTEGER NOT NULL, buyer INTEGER NOT NULL, seller INTEGER NOT NULL, jeans TEXT NOT NULL, mesasure INTEGER NOT NULL, bags INTEGER NOT NULL, rate  INTEGER, buy_commsion_rate INTEGER NOT NULL, sell_comission_rate INTEGER NOT NULL,mode TEXT NOT NULL , brokerage_seller INTEGER NOT NULL, brokerage_buyer INTEGER NOT NULL, FOREIGN KEY(buyer) REFERENCES PARTY(id), FOREIGN KEY(seller) REFERENCES PARTY(id) );');
   userDB.run('CREATE TABLE IF NOT EXISTS HEADER(name TEXT NOT NULL, add_1 TEXT NOT NULL, add_2 TEXT NOT NULL, phone TEXT NOT NULL, pan TEXT NOT NULL);');
+  userDB.run('CREATE TABLE IF NOT EXISTS JEANS(jeans_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL )');
   event.returnValue = `Connected to selected db - ${arg[0]}`;
 })
 
@@ -346,3 +348,20 @@ ipcMain.on('load bill date', (event,args)=>{
   ipcMain.on('load bill date rows',(event,arg)=>{
     event.reply('load bill date rows completed',broker_date_row);
   })
+
+ipcMain.on('jeans-name', (event,args)=>{
+  userDB.all('SELECT name from JEANS', [], (err, rows)=>{
+    if(err){
+      throw err;
+    }
+    event.reply('jeans-name-loaded',rows)
+  })
+})
+ipcMain.on('send_jeans_save',(event,args)=>{
+  userDB.run(`INSERT OR IGNORE INTO JEANS(name) VALUES("${args}")`, [], (err,row)=>{
+    if(err){
+      throw err;
+    }
+    event.returnValue = 'Done'
+  })
+})

@@ -27,7 +27,7 @@
   <div class="sidepanel">
 
 
-    <h1>Transaction Page</h1>
+    
     <form action="" id='transaction_form' onsubmit="Javascript:save_transaction_form(event)">
 
         <h3 >Trans id : <span id="Transid"></span></h3>
@@ -45,7 +45,12 @@
           </select>
         </label>
 
-        <label for="jeans">Jeans <input type="text" id='jeans'></label>
+        <label for="jeans">Jeans</label>
+        <input list="jeanss" name="jeans" id="jeans" required>
+        <datalist id="jeanss">
+
+        </datalist>
+
 
         <!--Radio box-->
         <input type="radio" id="weight" name="b_mode" value="w" checked>

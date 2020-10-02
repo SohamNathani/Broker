@@ -29,6 +29,8 @@ let modes = document.getElementsByName('b_mode');
 //save BUTTON
 let save_btn = document.getElementById("trans_save_btn_css");
 
+let jeans = document.getElementById('jeanss');
+
  ipcRenderer.send('pageloaded','I am loaded');
  var buyer = document.getElementById('buyer');
  var seller = document.getElementById('seller');
@@ -54,7 +56,7 @@ let save_btn = document.getElementById("trans_save_btn_css");
      });
 
  })
-
+load_jeans();
 
  last_record_fetch();
 
@@ -134,7 +136,7 @@ function edit_function(){
 //SAVE TRANSACTION FORM
 
 function save_transaction_form(event){
-    event.preventDefault();
+    
     let save_mode;
     for(i = 0; i < modes.length; i++) {
             if(modes[i].checked){
@@ -142,6 +144,7 @@ function save_transaction_form(event){
             break;
       }
     }
+    let jeans_result = ipcRenderer.sendSync('send_jeans_save',document.getElementById('jeans').value)
 
     let brokerage_seller;
     let brokerage_buyer;
@@ -187,6 +190,7 @@ function save_transaction_form(event){
 
 
         save_flag_new=1;
+        //load_jeans();
         last_record_fetch();
     })
 }
@@ -393,4 +397,20 @@ function formatDate(date) {
         day = '0' + day;
 
     return [year, month, day].join('-');
+}
+
+function load_jeans(){
+  ipcRenderer.send('jeans-name','');
+   ipcRenderer.on('jeans-name-loaded', (event, arg)=>{
+       arg.forEach(optionss => {
+           var option = document.createElement('option');
+           option.value = optionss.name;
+           //console.log(option);
+
+           //seller.appendChild(option);
+           jeans.appendChild(option);
+       });
+
+   })
+
 }
