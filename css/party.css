@@ -1,0 +1,88 @@
+.disabledClick{
+    pointer-events: none;;
+}
+.party-heading{
+
+    margin-top:40px;
+}
+input:focus, textarea:focus, select:focus{
+        outline: none;
+    }
+h3{
+    margin:10px 10% 30px 0%;
+}
+#partyform{
+    color:rgba(5,16,227,0.6);
+    padding:2px 120px;
+    margin:50px auto;
+    width:40%;
+    height:auto;
+    background-color: whitesmoke;
+    border:none;
+    border-radius: 2px;
+    box-shadow: 0px 3px 6px #ccc;
+}
+#partyform label{
+    font-weight: bold;
+    font-size: 14px;
+    display:block;
+    margin:1px 10%;
+}
+#partyform .input{
+
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: groove;
+  background-color: whitesmoke;
+
+  padding:auto 20px;
+    display:block;
+    width:80%;
+    height:25px;
+
+    margin:7px 10%;
+    margin-bottom:17px;
+    border-radius:3px;
+}
+
+ #submit-btn{
+    display:block;
+    margin:17px 5%;
+    margin-bottom: 10px;
+    width:90%;
+    height:30px;
+    font-size: 20px;
+    color:white;
+    border-radius:20px;
+    border:none;
+    background-color: rgba(0, 10, 227, 0.5);
+
+}
+#partyform h1{
+
+    margin-bottom: 20px;
+}
+.trans_btn button:disabled{
+  border-radius:20px;
+  padding:5px 20px;
+  border:none;
+  background-color:#90a4ae;
+  color:white;
+}
+.trans_btn button{
+  margin-left:10px;
+  font-size:15px;
+  border-radius:20px;
+  padding:5px 20px;
+  border:none;
+  background-color: rgba(0, 10, 227, 0.5);
+  color:white;
+}
+#submit-btn:disabled{
+  border-radius:20px;
+  padding:5px 20px;
+  border:none;
+  background-color:#90a4ae;
+  color:white;
+}

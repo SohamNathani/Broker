@@ -4,9 +4,9 @@ html{
     background-repeat: no-repeat;
     background-size:cover;
     box-shadow:inset 0 0 0 2000px rgba(0, 10, 227, 0.5);
-    
+
   }
-    
+
 
 h1{
     font-size: 50px;
@@ -34,8 +34,11 @@ button{
     font-size: 17px;
     font-weight: bolder;
     color:rgb(5, 16, 227);
-    
+
 }
 #one{
     padding:10px 48px;
+}
+.disabledClick{
+    pointer-events: none;;
 }

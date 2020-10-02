@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/start.css">
+    <link rel="stylesheet" href="./css/party.css">
+    <script>window.$ = window.jQuery = require('jquery');</script>
     <title>Document</title>
 </head>
-<body>
+<body onkeydown="if(event.keyCode==13){event.keyCode=9; return event.keyCode}">
     <div class="grid-container">
         <div class='nav'>
         <ul>
@@ -22,7 +24,7 @@
         <div class="sidepanel">
 
             <form action="" name='partyform' id="partyform" onsubmit="Javascript:partysendform(event)">
-                <h1 class="party-heading">Party Id :- <span id="party-id"></span> </h1>
+                <h3 class="party-heading">Party Id - <span id="party-id"></span> </h3>
 
                 <label for="name">Party Name</label>
                 <input type="text" id='name' class="input">
@@ -42,7 +44,7 @@
                 <input type="submit" id="submit-btn" value='Submit'>
             </form>
             <div class="trans_btn">
-              <button onclick="add_function()" id="add-btn">Add</button>
+              <button onclick="add_function()" id="add-btn" autofocus>Add</button>
               <button onclick="edit_function()" id="edit-btn">Edit</button>
               <button onclick="search_function()" id="search-btn">Search</button>
               <button onclick="forward_arrow()" id="forward-btn"> > </button>
@@ -104,7 +106,7 @@
 
     //Cancel FUNCTION
     function cancel_function(){
-      read_only_mode();
+      last_record_fetch();
     }
 
     //Add Function
@@ -220,7 +222,7 @@
 
 //
 function read_only_mode(){
-  cancel_btn.disabled=true
+  cancel_btn.disabled = true;
   submit_btn.disabled = true;
   add_btn.disabled = false;
   edit_btn.disabled = false;
@@ -247,5 +249,22 @@ function write_also_mode(){
 
 }
 }
+
+
+$('body').on('keydown', 'input, select', function(e) {
+    if (e.key === "Enter") {
+        var self = $(this), form = self.parents('form:eq(0)'), focusable, next;
+        focusable = form.find('input,a,select,button,textarea').filter(':visible');
+        next = focusable.eq(focusable.index(this)+1);
+        if (next.length) {
+            next.focus();
+        } else {
+            form.submit();
+            $('#add-btn').focus();
+        }
+        return false;
+    }
+});
+
 </script>
 </html>

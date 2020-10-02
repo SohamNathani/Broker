@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/start.css">
     <link rel="stylesheet" href="./js/select2.min.css">
     <link rel="stylesheet" href="./css/trans.css">
     <script>window.$ = window.jQuery = require('jquery');
@@ -27,48 +28,62 @@
   <div class="sidepanel">
 
 
-    
+
     <form action="" id='transaction_form' onsubmit="Javascript:save_transaction_form(event)">
+        <div class="one-line-container">
 
-        <h3 >Trans id : <span id="Transid"></span></h3>
-        <label for="date">Date <input type="date" id="date"></label>
+          <label for="date">Date <input type="date" id="date"></label>
+          <h3 >Trans id : <span id="Transid"></span></h3>
+        </div>
+        <br>
 
-        <label for="seller">Seller
-          <select name="Seller" id="seller" class='myselect'>
-              <option value="">-----Select seller------</option>
-          </select>
-        </label>
+        <label for="seller">Seller</label>
+        <select name="Seller" id="seller" class='myselect'>
+            <option value="">-----Select seller------</option>
+        </select><br>
 
-        <label for="buyer">Buyer
-          <select name="Buyer" id="buyer" class='myselect'>
-              <option value="">------Select buyer------</option>
-          </select>
-        </label>
+        <label for="buyer">Buyer</label>
+        <select name="Buyer" id="buyer" class='myselect'>
+            <option value="">------Select buyer------</option>
+        </select><br>
 
         <label for="jeans">Jeans</label>
         <input list="jeanss" name="jeans" id="jeans" required>
         <datalist id="jeanss">
 
         </datalist>
-
+        <br>
 
         <!--Radio box-->
-        <input type="radio" id="weight" name="b_mode" value="w" checked>
+        <label for="">Brokerage By:-
         <label for="weight">Weight</label>
-        <input type="radio" id="unit" name="b_mode" value="u">
+        <input type="radio" id="weight" name="b_mode" value="w" checked>
         <label for="unit">Unit</label>
-        <input type="radio" id="percent" name="b_mode" value="p">
+        <input type="radio" id="unit" name="b_mode" value="u">
         <label for="percent">Percentage</label>
+        <input type="radio" id="percent" name="b_mode" value="p">
+        </label>
+        <br>
 
-        <label for="Measure">Measure <input type="number" id='measure'></label>
+        <label for="Measure">Measure</label>
+        <input type="number" id='measure'>
+        <br>
 
-        <label for="bags">Bags <input type="number" id='bags' ></label>
+        <label for="bags">Bags </label>
+        <input type="number" id='bags' >
+        <br>
 
-        <label for="rate">Rate <input type="number" id='rate' ></label>
+        <label for="rate">Rate </label>
+        <input type="number" id='rate' >
+        <br>
 
-        <label for="seller_comission">Seller Commision rate <input type="number" id='seller_comission' ></label>
+        <label for="seller_comission">Seller Commision rate </label>
+        <input type="number" id='seller_comission' >
+        <br>
 
-        <label for="buyer_comission">Buyer Commision rate <input type="number" id='buyer_comission' ></label>
+        <label for="buyer_comission">Buyer Commision rate </label>
+        <input type="number" id='buyer_comission' >
+        <br>
 
         <input type="submit" id="trans_save_btn_css" value='Save'>
     </form>

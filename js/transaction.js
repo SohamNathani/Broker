@@ -68,7 +68,7 @@ load_jeans();
     ipcRenderer.send('need_transaction_id',"Pass Transaction id");
     ipcRenderer.on('current_transaction_id',(event,arg)=>{
         let Transaction_id = document.getElementById('Transid')
-        Transaction_id.innerHTML=`Trans Id - ${arg+1}`;
+        Transaction_id.innerHTML=`${arg+1}`;
         //Enabling write permission
 
         save_flag_new=1
@@ -136,7 +136,7 @@ function edit_function(){
 //SAVE TRANSACTION FORM
 
 function save_transaction_form(event){
-    
+
     let save_mode;
     for(i = 0; i < modes.length; i++) {
             if(modes[i].checked){
