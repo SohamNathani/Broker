@@ -31,34 +31,14 @@ let save_btn = document.getElementById("trans_save_btn_css");
 
 let jeans = document.getElementById('jeanss');
 
- ipcRenderer.send('pageloaded','I am loaded');
+
  var buyer = document.getElementById('buyer');
  var seller = document.getElementById('seller');
 //LOADING PARTY NAME IN DROPDOWN
- ipcRenderer.on('party-name', (event, arg)=>{
-     arg.forEach(optionss => {
-         var option = document.createElement('option');
-         option.value = optionss.party_id;
-         option.innerHTML = optionss.name;
-         //console.log(option);
 
-         //seller.appendChild(option);
-         buyer.appendChild(option);
-     });
-     arg.forEach(optionss => {
-         var option = document.createElement('option');
-         option.value = optionss.party_id;
-         option.innerHTML = optionss.name;
-         //console.log(option);
-
-         seller.appendChild(option);
-         //buyer.appendChild(option);
-     });
-
- })
 load_jeans();
 
- last_record_fetch();
+ 
 
 
  //ADD FUNCTION TO ADD TRANSACTION

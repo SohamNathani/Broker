@@ -180,7 +180,7 @@ ipcMain.on('load bill', (event,args)=>{
 let broker_row = 0
 ipcMain.on('send detail',(event, arg)=>{
   console.log(arg)
-  userDB.all('SELECT trans_date,jeans,mesasure,rate,bags,buyer,seller,brokerage_seller,brokerage_buyer,ps.name as seller_name,pb.name as buyer_name FROM TRANSACTIONs t JOIN PARTY ps on t.seller = ps.party_id JOIN PARTY pb on t.buyer = pb.party_id WHERE seller = ? or buyer = ?',[arg,arg],(err, rows)=>{
+  userDB.all('SELECT trans_id,trans_date,jeans,mesasure,rate,bags,buyer,seller,brokerage_seller,brokerage_buyer,ps.name as seller_name,pb.name as buyer_name FROM TRANSACTIONs t JOIN PARTY ps on t.seller = ps.party_id JOIN PARTY pb on t.buyer = pb.party_id WHERE seller = ? or buyer = ?',[arg,arg],(err, rows)=>{
     if(err){
       throw err;
 
@@ -323,7 +323,7 @@ ipcMain.on('load transaction detail for all', (event, arg)=>{
 let broker_date_row = 0
 ipcMain.on('send detail with date',(event, arg)=>{
   console.log(arg)
-  userDB.all('SELECT trans_date,jeans,mesasure,rate,bags,buyer,seller,brokerage_seller,brokerage_buyer,ps.name as seller_name,pb.name as buyer_name FROM TRANSACTIONs t JOIN PARTY ps on t.seller = ps.party_id JOIN PARTY pb on t.buyer = pb.party_id WHERE (seller = ? or buyer = ?) and (trans_date >= ? and trans_date <= ? )',[arg[0],arg[0],arg[1],arg[2]],(err, rows)=>{
+  userDB.all('SELECT trans_id,trans_date,jeans,mesasure,rate,bags,buyer,seller,brokerage_seller,brokerage_buyer,ps.name as seller_name,pb.name as buyer_name FROM TRANSACTIONs t JOIN PARTY ps on t.seller = ps.party_id JOIN PARTY pb on t.buyer = pb.party_id WHERE (seller = ? or buyer = ?) and (trans_date >= ? and trans_date <= ? )',[arg[0],arg[0],arg[1],arg[2]],(err, rows)=>{
     if(err){
       throw err;
 

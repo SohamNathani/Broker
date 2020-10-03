@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/start.css">
+    <link rel="stylesheet" href="./css/setting.css">
     <title>Document</title>
 </head>
 <body>
@@ -20,6 +21,7 @@
       <button onclick=create_backup() id="backup-btn" disabled>Create Backup</button>
       </div>
       <div class="sidepanel">
+        <h2>Settings</h2>
         <form action="" onsubmit="Javascript:send_setting_form(event)">
             <label for="name">Name</label>
             <input type="text" id="name">
@@ -31,7 +33,7 @@
             <input type="text" id="phone_no">
             <label for="pan">PAN Number</label>
             <input type="text" id="pan">
-            <input type='submit' value='Update'>
+            <input type='submit' class="setting_save_btn" value='Update'>
 
 
         </form>

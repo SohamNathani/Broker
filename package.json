@@ -20,6 +20,6 @@
     "postinstall": "install-app-deps",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Soham Nathani <sohamnathani678@gmail.com>",
   "license": "ISC"
 }

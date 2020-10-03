@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/start.css">
+    <link rel="stylesheet" href="./css/report.css">
     <title>Document</title>
 </head>
 <body>
@@ -21,23 +22,33 @@
       </div>
       <div class="sidepanel">
    <h1>Report Page</h1>
-    <label for="pdf_party_name"></label>
-        <select name="" id="pdf_party_name">
-            <option value="">----Select Party----</option>
-        </select>
-    <input type="submit" value='See Pdf' onclick='open_report_form()'><br>
-    <input type="submit" value="Open Address Book" onclick='open_address_book()'><br>
-    <input type="submit" value="All report" onclick="open_all_report()"><br>
+   <div class="option_container">
+     <label for="pdf_party_name"></label>
+         <select name="" id="pdf_party_name" required>
+             <option value="">----Select Party----</option>
+         </select>
+         <input type="submit" value='See Pdf' class="button_class" onclick='open_report_form()'>
+   </div>
 
-    <label for="party-with-date">
-        <select id="party-with-date" name="">
-          <option value="">----Select Party----</option>
-        </select>
-    </label>
-        <input type="date" name="" id="date_from_bill" value="">
-        <input type="date" name="" id="date_to_bill" value="">
-        <input type="button"  value="See Bill" onclick="open_report_date_form()">
-<br>
+   <div class="option_container">
+      <input type="submit" value="Open Address Book" class="button_class" onclick='open_address_book()'>
+   </div>
+    <div class="option_container">
+      <input type="submit" value="All report" class="button_class" onclick="open_all_report()">
+    </div>
+
+    <div class="option_container">
+      <label for="party-with-date">
+          <select id="party-with-date" name="" required>
+            <option value="">----Select Party----</option>
+          </select>
+      </label>
+          <input type="date" name="" id="date_from_bill" value="" required>
+          <input type="date" name="" id="date_to_bill" value="" required>
+          <input type="button"  value="See Bill" class="button_class" onclick="open_report_date_form()">
+
+    </div>
+
 
   </div>
    <script>
@@ -49,6 +60,7 @@
        const BrowserWindow = require('electron').remote.BrowserWindow;
        let pdf_party_name = document.getElementById('pdf_party_name')
        let pdf_party_with_date = document.getElementById('party-with-date')
+
        //Call for party loading
        ipcRenderer.send('load_party_name','');
         //Party name loaded

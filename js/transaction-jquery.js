@@ -1,5 +1,27 @@
 $(document).ready(function(){
     $('.myselect').select2();
+    ipcRenderer.send('pageloaded','I am loaded');
+    ipcRenderer.on('party-name', (event, arg)=>{
+        arg.forEach(optionss => {
+            var option = document.createElement('option');
+            option.value = optionss.party_id;
+            option.innerHTML = optionss.name;
+            //console.log(option);
+
+            //seller.appendChild(option);
+            buyer.appendChild(option);
+        });
+        arg.forEach(optionss => {
+            var option = document.createElement('option');
+            option.value = optionss.party_id;
+            option.innerHTML = optionss.name;
+            //console.log(option);
+
+            seller.appendChild(option);
+            //buyer.appendChild(option);
+        });
+      last_record_fetch();  
+    })
 })
 $('body').on('keydown', 'input, select', function(e) {
     if (e.key === "Enter") {

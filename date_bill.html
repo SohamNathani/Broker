@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/bill.css">
     <title>Document</title>
 </head>
 <body>
@@ -13,6 +14,7 @@
     <h4>Bill for <span id="bill_for_party"></span></h4>
     <table id="bill_table">
         <tr>
+            <th class='id'>Id</th>
             <th>Date</th>
             <th>Party Name</th>
             <th>Jeans</th>
@@ -22,6 +24,7 @@
             <th>Brokerage</th>
         </tr>
     </table>
+    <p>TOTAL = <span id="total_b"></span>/-</p>
     <script>
         const ipcRenderer = require('electron').ipcRenderer;
         const remote = require("electron").remote;
@@ -47,36 +50,64 @@
                 document.getElementById('bill_for_party').innerHTML=arg[1][0].buyer_name;
             }
             let myTable = document.getElementById('bill_table');
+            let Total_Brokerage = 0
             for(var i=0;i<arg[1].length;i++){
                 var newrow = myTable.insertRow(-1);
-                var td_date = newrow.insertCell(0)
-                var td_name = newrow.insertCell(1);
-                var td_jeans = newrow.insertCell(2);
-                var td_rate = newrow.insertCell(3);
-                var td_weight = newrow.insertCell(4);
-                var td_bags = newrow.insertCell(5);
-                var td_brokerage = newrow.insertCell(6);
+                var td_id = newrow.insertCell(0)
+                var td_date = newrow.insertCell(1)
+                var td_name = newrow.insertCell(2);
+                var td_jeans = newrow.insertCell(3);
+                var td_rate = newrow.insertCell(4);
+                var td_weight = newrow.insertCell(5);
+                var td_bags = newrow.insertCell(6);
+                var td_brokerage = newrow.insertCell(7);
+                td_id.innerHTML = arg[1][i].trans_id;
                 td_jeans.innerHTML = arg[1][i].jeans;
                 td_rate.innerHTML = arg[1][i].rate;
                 td_weight.innerHTML = arg[1][i].mesasure;
                 td_bags.innerHTML = arg[1][i].bags;
-                td_date.innerHTML = arg[1][i].trans_date;
+                td_date.innerHTML = days_to_date(arg[1][i].trans_date);
 
                 if (arg[0]==arg[1][i].seller){
                 td_name.innerHTML = arg[1][i].buyer_name;
                 td_brokerage.innerHTML = arg[1][i].brokerage_seller;
+                Total_Brokerage += arg[1][i].brokerage_seller;
                 }else{
                     td_name.innerHTML = arg[1][i].seller_name;
                     td_brokerage.innerHTML =arg[1][i].brokerage_buyer;
+                    Total_Brokerage += arg[1][i].brokerage_buyer;
                 }
 
             }
+            document.getElementById('total_b').innerHTML = Total_Brokerage;
 
         })
 
 
 
+        function days_to_date(days){
+          let result = new Date('2020-01-01')
+          days = parseInt(days)
 
+          result.setDate(result.getDate() + days);
+
+          return formatDate(result);
+
+
+        }
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
 
         // GENERATE PDF FUNCTION
         function saveInvoiceToStorage(){

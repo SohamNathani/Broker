@@ -1,0 +1,49 @@
+input:focus, textarea:focus, select:focus{
+        outline: none;
+    }
+
+form{
+  width:80%;
+  margin:20px auto;
+
+  background-color: whitesmoke;
+  padding-top: 20px;
+  box-shadow: 0px 3px 6px #ccc;
+  border-radius: 2px;
+  padding-bottom:10px;
+}
+input{
+  display: block;
+  width:80%;
+  margin:3px auto;
+  margin-bottom: 15px;
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: groove;
+  background-color: whitesmoke;
+}
+h2{
+  margin-left: 20px;
+  color:rgba(5,16,227,0.6);
+}
+
+label{
+  width:80%;
+  margin-top:10px;
+  color:rgba(5,16,227,0.6);
+  font-weight: bold;
+  font-size: 14px;
+  display:block;
+  margin:1px auto;
+}
+.setting_save_btn{
+  margin-top:20px;
+  border:none;
+  border-radius:20px;
+  padding:8px 17px;
+  background-color:rgba(5,16,227,0.6);
+  color:#fafafa;
+  width:auto;
+  margin-bottom:30px;
+}
