@@ -78,7 +78,7 @@
 
     //Save Party Function
     function partysendform(event){
-        event.preventDefault();
+
         let partyname = document.getElementById("name").value;
         let partycity = document.getElementById("city").value;
         let partygst = document.getElementById("gst").value;
@@ -111,6 +111,8 @@
 
     //Add Function
     function add_function(){
+      document.getElementById('name').focus();
+      document.getElementById('name').select();
       write_also_mode();
 
       document.getElementById('partyform').reset();
